@@ -122,7 +122,7 @@ const Contact = () => {
   };
 
   return (
-    <section id="kontakt" ref={sectionRef} className=" xl:pb-10 2xl:pb-16 2xl:pt-20">
+    <section id="kontakt" ref={sectionRef} className="bg-black xl:pb-10 2xl:pb-16 2xl:pt-20">
       <div className="max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-10">
         <h2 ref={headingRef} className="font-bold text-[28px] md:text-[36px] xl:text-[40px] leading-[36px] sm:leading-[44px] lg:leading-[50px] text-center text-white pb-[1.5vh] uppercase">
           Lassen Sie uns sprechen

@@ -64,7 +64,7 @@ const Cta = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative min-h-[480px] sm:min-h-[550px] lg:min-h-[600px] bg-cover bg-left xl:bg-center bg-no-repeat overflow-hidden"
+      className="bg-black relative min-h-[480px] sm:min-h-[550px] lg:min-h-[600px] bg-cover bg-left xl:bg-center bg-no-repeat overflow-hidden "
       style={{ backgroundImage: "url('/cta-bg.png')" }}
     >
       {/* Top fade */}
@@ -116,6 +116,7 @@ const Cta = () => {
         </div>
         
       </div>
+
     </section>
   );
 };

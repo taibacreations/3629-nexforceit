@@ -290,7 +290,7 @@ const Services = () => {
   }, []);
 
   return (
-    <section id="dienstleistungen" ref={sectionRef} className="relative overflow-hidden pt-[48px] md:pt-[65px] md:pb-[30px] 2xl:py-[8vh]">
+    <section id="dienstleistungen" ref={sectionRef} className="bg-black relative overflow-hidden pt-[48px] md:pt-[65px] md:pb-[30px] 2xl:py-[8vh]">
       <div className="max-w-[930px] mx-auto px-4">
         <h2
           ref={headingRef}

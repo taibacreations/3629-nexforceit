@@ -65,7 +65,7 @@ const Footer = () => {
   return (
     <section
       ref={sectionRef}
-      className="relative w-full bg-bottom md:bg-cover md:bg-center bg-no-repeat overflow-hidden md:pt-[80px] 2xl:mt-[12.5vh]"
+      className="relative w-full bg-black bg-bottom md:bg-cover md:bg-center 2xl:bg-contain 2xl:bg-bottom bg-no-repeat overflow-hidden md:pt-[80px] 2xl:pt-[18.5vh]"
       style={{ backgroundImage: "url('/footer-bg.png')" }}
     >
       {/* Mobile-only blend overlay: bg image ko page ke black background ke sath merge karta hai */}

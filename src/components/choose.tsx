@@ -37,7 +37,7 @@ const Choose = () => {
   }, []);
 
   return (
-    <section id='warum-wir' ref={sectionRef}>
+    <section id='warum-wir' ref={sectionRef} className='bg-black'>
     <div className='relative pt-[50px] md:pb-[20px] 2xl:pb-[38px]'>
       {/* lg+ line — original, full width, unchanged structure */}
       <div className="hidden lg:block absolute top-[58%] left-0 w-full h-[1px] bg-white/30" />
