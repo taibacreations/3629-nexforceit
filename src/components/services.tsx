@@ -290,11 +290,11 @@ const Services = () => {
   }, []);
 
   return (
-    <section id="dienstleistungen" ref={sectionRef} className="bg-black relative overflow-hidden pt-[48px] md:pt-[65px] md:pb-[30px] 2xl:py-[8vh]">
+    <section id="dienstleistungen" ref={sectionRef} className=" relative bg-black overflow-hidden pt-[48px] md:pt-[65px] md:pb-[30px] 2xl:py-[8vh]">
       <div className="max-w-[930px] mx-auto px-4">
         <h2
           ref={headingRef}
-          className="font-bold text-[28px] md:text-[36px] xl:text-[40px] leading-[36px] sm:leading-[44px] lg:leading-[50px] pb-4 uppercase text-center text-white"
+          className=" font-bold text-[28px] md:text-[36px] xl:text-[40px] leading-[36px] sm:leading-[44px] lg:leading-[50px] pb-4 uppercase text-center text-white"
         >
           Unsere IT-Leistungen
         </h2>
@@ -311,14 +311,14 @@ const Services = () => {
       {/* Slider wrapper — pointer handlers yahan, cursor-grab class bhi yahan */}
       <div
         ref={wrapperRef}
-        className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden mt-[4vh] select-none cursor-grab active:cursor-grabbing"
+        className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden mt-[4vh] select-none cursor-grab active:cursor-grabbing z-10"
         style={{ touchAction: "pan-y" }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
       >
-        <div ref={trackRef} className="flex gap-[30px]">
+        <div ref={trackRef} className="flex gap-[30px] ">
           {extendedCards.map((service, index) => (
             <div
               key={`${service.id}-${index}`}

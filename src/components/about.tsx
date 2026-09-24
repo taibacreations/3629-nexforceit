@@ -111,14 +111,14 @@ const About = () => {
           <img
             src="/left-shape.svg"
             alt=""
-            className="absolute left-0 bottom-[-400px] z-0 w-[300px]"
+            className="absolute left-0 bottom-[-400px] z-1 w-[300px]"
           />
 
           {/* Right SVG */}
           <img
             src="/right-shape.svg"
             alt=""
-            className="absolute right-0 bottom-[-500px] z-0 w-[992px]"
+            className="absolute right-0 bottom-[-500px] z-1 w-[992px]"
           />
           
       <div className=" relative max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-10">
