@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { scrollToSection } from "@/lib/scrollToSection"; // path apne project structure ke hisaab se adjust karein
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -101,6 +102,7 @@ const Cta = () => {
             ref={buttonRef}
             onMouseEnter={handleButtonEnter}
             onMouseLeave={handleButtonLeave}
+            onClick={() => scrollToSection("kontakt")}
             className="button relative overflow-hidden text-[18px] md:text-[20px] xl:text-[24px] w-full sm:w-auto px-8 h-[45px] md:h-[55px] xl:h-[69px] mt-6"
             style={{ transform: "scale(1)" }}
           >

@@ -7,23 +7,27 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
 const navLinks = [
-  { label: "heim", href: "#" },
-  { label: "Über uns", href: "#" },
-  { label: "Dienstleistungen", href: "#" },
-  { label: "Warum wir?", href: "#" },
-  { label: "Servicegebiet", href: "#" },
-  { label: "Kontakt", href: "#" },
+  { label: "Heim", id: "heim" },
+  { label: "Über uns", id: "ueber-uns" },
+  { label: "Dienstleistungen", id: "dienstleistungen" },
+  { label: "Warum wir?", id: "warum-wir" },
+  { label: "Servicegebiet", id: "servicegebiet" },
+  { label: "Kontakt", id: "kontakt" },
 ];
 
 const PILL_PADDING_X = 8;
 const PILL_HEIGHT = 30;
+const SCROLL_EXTRA_GAP = 20;
+const KONTAKT_INDEX = navLinks.findIndex((item) => item.id === "kontakt");
 
 const AnimatedButton = ({
   className = "",
   children,
+  onClick,
 }: {
   className?: string;
   children: React.ReactNode;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }) => {
   const btnRef = useRef<HTMLButtonElement>(null);
   const shineRef = useRef<HTMLSpanElement>(null);
@@ -51,6 +55,7 @@ const AnimatedButton = ({
       ref={btnRef}
       onMouseEnter={handleEnter}
       onMouseLeave={handleLeave}
+      onClick={onClick}
       className={`button relative overflow-hidden ${className}`}
       style={{ transform: "scale(1)" }}
     >
@@ -75,6 +80,8 @@ const Header = () => {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const isClickScrolling = useRef(false); // click-scroll ke dauran observer ko temporarily ignore karne ke liye
 
   const sidebarLinkRefs = useRef<Array<HTMLAnchorElement | null>>([]);
 
@@ -83,6 +90,64 @@ const Header = () => {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToSection = (id: string, index: number) => {
+    const el = document.getElementById(id);
+    if (el) {
+      const headerHeight = headerRef.current?.offsetHeight ?? 0;
+      const targetY =
+        el.getBoundingClientRect().top +
+        window.scrollY -
+        headerHeight -
+        SCROLL_EXTRA_GAP;
+
+      // Click ke dauran observer ko rokte hain taake beech mein galat section active na ho jaye
+      isClickScrolling.current = true;
+      window.scrollTo({ top: targetY, behavior: "smooth" });
+
+      // Smooth-scroll khatam hone ka andaza — thora buffer time ke sath observer wapas chalu
+      window.clearTimeout((scrollToSection as any)._t);
+      (scrollToSection as any)._t = window.setTimeout(() => {
+        isClickScrolling.current = false;
+      }, 900);
+    }
+    setActiveIndex(index);
+  };
+
+  const handleNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    id: string,
+    index: number
+  ) => {
+    e.preventDefault();
+    scrollToSection(id, index);
+  };
+
+  const handleSidebarNavClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    id: string,
+    index: number
+  ) => {
+    e.preventDefault();
+    closeMenu();
+    setTimeout(() => scrollToSection(id, index), 300);
+  };
+
+  const handleKontaktClick = () => {
+    scrollToSection("kontakt", KONTAKT_INDEX);
+  };
+
+  const handleSidebarKontaktClick = () => {
+    closeMenu();
+    setTimeout(() => scrollToSection("kontakt", KONTAKT_INDEX), 300);
+  };
 
   const movePill = (index: number) => {
     const link = linkRefs.current[index];
@@ -114,6 +179,57 @@ const Header = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Jab bhi activeIndex change ho (scroll-spy ya click se) — agar koi hover nahi ho raha,
+  // pill ko us naye active link par smoothly move karo. Hover hamesha priority leta hai.
+  useEffect(() => {
+    if (hoveredIndex === null) {
+      movePill(activeIndex);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeIndex]);
+
+  // ---------------- Scroll-spy: manual scroll par bhi sahi section active ho ----------------
+  useEffect(() => {
+    if (!mounted) return;
+
+    const sections = navLinks
+      .map((item) => document.getElementById(item.id))
+      .filter((el): el is HTMLElement => el !== null);
+
+    if (sections.length === 0) return;
+
+    const headerHeight = headerRef.current?.offsetHeight ?? 0;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        // Click-triggered smooth-scroll ke dauran observer ko ignore karo,
+        // taake beech-raste ka koi section galti se active na ho jaye
+        if (isClickScrolling.current) return;
+
+        const visible = entries.filter((entry) => entry.isIntersecting);
+        if (visible.length === 0) return;
+
+        // Jo section header ke sabse qareeb (viewport ke top ke sabse nazdeek) hai, wahi "active" hai
+        const closest = visible.reduce((prev, curr) =>
+          curr.boundingClientRect.top < prev.boundingClientRect.top ? curr : prev
+        );
+
+        const idx = navLinks.findIndex((item) => item.id === closest.target.id);
+        if (idx !== -1) setActiveIndex(idx);
+      },
+      {
+        root: null,
+        // Header ke neeche ek patli "active zone" banati hai — jo section is zone ko chhue, wahi active
+        rootMargin: `-${headerHeight + 30}px 0px -65% 0px`,
+        threshold: 0,
+      }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => observer.disconnect();
+  }, [mounted]);
+
   useEffect(() => {
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ defaults: { ease: "power4.out" } });
@@ -142,8 +258,6 @@ const Header = () => {
           "-=0.5"
         )
         .call(() => {
-          // Once entrance is done, remove the transform so this section
-          // never acts as a containing block for fixed-position children.
           gsap.set(headerRef.current, { clearProps: "transform" });
         });
     }, headerRef);
@@ -151,9 +265,6 @@ const Header = () => {
     return () => ctx.revert();
   }, []);
 
-  // Only animate the LINKS with GSAP when sidebar opens — container
-  // visibility/position is handled purely by Tailwind classes below,
-  // so there is no fight between React's static styles and GSAP.
   useEffect(() => {
     if (!mounted || !menuOpen) return;
     const ctx = gsap.context(() => {
@@ -184,7 +295,6 @@ const Header = () => {
 
   const sidebar = (
     <>
-      {/* Sidebar overlay (backdrop) — always mounted, just fades via classes */}
       <div
         onClick={closeMenu}
         className={`lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-[9998] transition-opacity duration-300 ease-out ${
@@ -192,7 +302,6 @@ const Header = () => {
         }`}
       />
 
-      {/* Sidebar panel — always mounted, slides via classes */}
       <div
         className={`xl:hidden fixed top-0 right-0 h-full w-[78%] max-w-[340px] bg-[#011750] z-[9999] flex flex-col shadow-2xl transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           menuOpen ? "translate-x-0" : "translate-x-full"
@@ -220,14 +329,11 @@ const Header = () => {
           {navLinks.map((item, index) => (
             <Link
               key={item.label}
-              href={item.href}
+              href={`#${item.id}`}
               ref={(el) => {
                 sidebarLinkRefs.current[index] = el;
               }}
-              onClick={() => {
-                setActiveIndex(index);
-                closeMenu();
-              }}
+              onClick={(e) => handleSidebarNavClick(e, item.id, index)}
               className="text-white text-[18px] font-extralight py-3 border-b border-white/5 hover:text-[#b9c8ff] transition-colors duration-300"
             >
               {item.label}
@@ -236,7 +342,10 @@ const Header = () => {
         </nav>
 
         <div className="mt-auto px-6 pb-10 pt-4">
-          <AnimatedButton className="text-[16px] w-full h-[50px]">
+          <AnimatedButton
+            className="text-[16px] w-full h-[50px]"
+            onClick={handleSidebarKontaktClick}
+          >
             Kontakt aufnehmen
           </AnimatedButton>
         </div>
@@ -245,10 +354,23 @@ const Header = () => {
   );
 
   return (
-    <section ref={headerRef} className="fixed top-0 left-0 w-full z-50">
-      <div className="max-w-[1480px] mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-10 pt-[3vh] lg:pt-[4.5vh]">
+    <section
+      ref={headerRef}
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-[#011750]/70 backdrop-blur-md shadow-lg shadow-black/20"
+          : "bg-transparent"
+      }`}
+    >
+      <div
+        className={`max-w-[1480px] mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-10 transition-all duration-300 ${
+          scrolled
+            ? "pt-[1.2vh] lg:pt-[1.5vh] pb-[1.2vh]"
+            : "pt-[3vh] lg:pt-[4.5vh] pb-[1.5vh] lg:pb-0"
+        }`}
+      >
         <div ref={logoRef}>
-          <Link href={"#"}>
+          <Link href="#heim" onClick={(e) => handleNavClick(e, "heim", 0)}>
             <Image
               src="/logo.svg"
               width={216}
@@ -277,7 +399,7 @@ const Header = () => {
           {navLinks.map((item, index) => (
             <Link
               key={item.label}
-              href={item.href}
+              href={`#${item.id}`}
               ref={(el) => {
                 linkRefs.current[index] = el;
               }}
@@ -285,7 +407,7 @@ const Header = () => {
                 setHoveredIndex(index);
                 movePill(index);
               }}
-              onClick={() => setActiveIndex(index)}
+              onClick={(e) => handleNavClick(e, item.id, index)}
               className={`relative z-10 text-[14px] xl:text-[16px] py-1 px-3.5 whitespace-nowrap transition-colors duration-300 ${
                 index === displayIndex
                   ? "text-[#011750] font-normal"
@@ -298,7 +420,10 @@ const Header = () => {
         </nav>
 
         <div ref={buttonWrapRef} className="hidden xl:block">
-          <AnimatedButton className="text-[16px] xl:text-[18px] w-[180px] xl:w-[223px] h-[46px] xl:h-[51px]">
+          <AnimatedButton
+            className="text-[16px] xl:text-[18px] w-[180px] xl:w-[223px] h-[46px] xl:h-[51px]"
+            onClick={handleKontaktClick}
+          >
             Kontakt aufnehmen
           </AnimatedButton>
         </div>

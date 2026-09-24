@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { scrollToSection } from "@/lib/scrollToSection"; // apne project ke path ke hisaab se adjust karein
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -53,16 +54,24 @@ const Footer = () => {
     return () => ctx.revert();
   }, []);
 
+  const handleFooterLinkClick = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    id: string
+  ) => {
+    e.preventDefault();
+    scrollToSection(id);
+  };
+
   return (
     <section
       ref={sectionRef}
-      className="relative w-full bg-bottom md:bg-cover md:bg-center bg-no-repeat overflow-hidden mt-10 pt-10 sm:pt-12 md:pt-[50px] xl:mt-[12.5vh]"
+      className="relative w-full bg-bottom md:bg-cover md:bg-center bg-no-repeat overflow-hidden md:pt-[80px] 2xl:mt-[12.5vh]"
       style={{ backgroundImage: "url('/footer-bg.png')" }}
     >
       {/* Mobile-only blend overlay: bg image ko page ke black background ke sath merge karta hai */}
-      <div className="absolute top-90 left-0 w-full h-30 -z-10 md:hidden backdrop-blur-md bg-gradient-to-b from-transparent via-[#010304] to-[#010304] pointer-events-none" />
+      <div className="absolute top-70 left-0 w-full h-30 -z-10 md:hidden backdrop-blur-md bg-gradient-to-b from-transparent via-[#010304] to-[#010304] pointer-events-none" />
 
-      <div className="max-w-[1400px] mx-auto px-6 sm:px-8 lg:px-4 flex flex-col md:flex-row justify-between items-center md:items-start gap-10 md:gap-4 lg:gap-6">
+      <div className="max-w-[1480px] mx-auto px-4 md:px-6 xl:px-10 flex flex-col md:flex-row justify-between items-center md:items-start gap-10 md:gap-4 lg:gap-6">
 
         {/* -------------------------------------------------quick links-------------------------------------- */}
         {/* self-start => mobile pe parent ke items-center ko ignore kar ke left edge pe rehta hai */}
@@ -71,32 +80,44 @@ const Footer = () => {
           className="order-2 md:order-1 self-start md:self-auto text-left w-full md:w-auto"
         >
           <h3 className="font-semibold text-[20px] mb-[20px] md:mb-[12px] lg:mb-[20px] xl:text-[24px] text-white">
-            Quick Links
+            Quicklinks
           </h3>
           <div className="flex flex-col lg:flex-row lg:gap-[15px] xl:gap-[30px] items-start">
             <div className="flex flex-col items-start">
               <ul>
                 <li className="text-[16px] xl:text-[18px] mb-[15px] md:mb-[8px] lg:mb-[15px] text-white/80 hover:text-white transition-colors">
-                  <Link href="/#home">Home</Link>
+                  <Link href="#heim" onClick={(e) => handleFooterLinkClick(e, "heim")}>
+                    Heim
+                  </Link>
                 </li>
                 <li className="text-[16px] xl:text-[18px] mb-[15px] md:mb-[8px] lg:mb-[15px] text-white/80 hover:text-white transition-colors">
-                  <Link href="/#about">About Us</Link>
+                  <Link href="#ueber-uns" onClick={(e) => handleFooterLinkClick(e, "ueber-uns")}>
+                    Über uns
+                  </Link>
                 </li>
                 <li className="text-[16px] xl:text-[18px] mb-[15px] md:mb-[8px] lg:mb-[15px] text-white/80 hover:text-white transition-colors">
-                  <Link href="/#services">Our Services</Link>
+                  <Link href="#dienstleistungen" onClick={(e) => handleFooterLinkClick(e, "dienstleistungen")}>
+                    Dienstleistungen
+                  </Link>
                 </li>
               </ul>
             </div>
             <div className="flex flex-col items-start">
               <ul>
                 <li className="text-[16px] xl:text-[18px] mb-[15px] md:mb-[8px] lg:mb-[15px] text-white/80 hover:text-white transition-colors">
-                  <Link href="/#why-choose-us">Why Choose Us</Link>
+                  <Link href="#warum-wir" onClick={(e) => handleFooterLinkClick(e, "warum-wir")}>
+                    Warum wir?
+                  </Link>
                 </li>
                 <li className="text-[16px] xl:text-[18px] mb-[15px] md:mb-[8px] lg:mb-[15px] text-white/80 hover:text-white transition-colors">
-                  <Link href="/#service-area">Service Area</Link>
+                  <Link href="#servicegebiet" onClick={(e) => handleFooterLinkClick(e, "servicegebiet")}>
+                    Servicegebiet
+                  </Link>
                 </li>
                 <li className="text-[16px] xl:text-[18px] mb-[15px] md:mb-[8px] lg:mb-[15px] text-white/80 hover:text-white transition-colors">
-                  <Link href="/#contact">Contact</Link>
+                  <Link href="#kontakt" onClick={(e) => handleFooterLinkClick(e, "kontakt")}>
+                    Kontakt
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -109,7 +130,7 @@ const Footer = () => {
           ref={logoRef}
           className="order-1 md:order-2 flex flex-col gap-[20px] md:gap-[12px] lg:gap-[20px] md:items-center"
         >
-          <Link href="/">
+          <Link href="#heim" onClick={(e) => handleFooterLinkClick(e, "heim")}>
             <img
               src="/footer-logo.svg"
               alt="NexForceIT Logo"
@@ -152,7 +173,7 @@ const Footer = () => {
           className="order-3 self-start md:self-auto text-left w-full md:w-auto"
         >
           <h3 className="font-semibold text-[20px] mb-[20px] md:mb-[12px] lg:mb-[20px] xl:text-[24px] text-white">
-            Contact Us
+            Kontaktieren Sie uns
           </h3>
           <div className="flex flex-col gap-[15px] md:gap-[10px] lg:gap-[15px] items-start">
             {/* items-start + icon mt-1 => email 2 lines mein wrap ho sake, icon top-aligned rahe */}

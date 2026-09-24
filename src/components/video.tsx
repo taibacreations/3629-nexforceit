@@ -3,7 +3,8 @@ import React from 'react'
 
 const Video = () => {
   return (
-    <section className="w-full pb-[50px] px-4 md:px-6 xl:px-8">
+    <section className="w-full 2xl:pb-[50px] 
+    px-4 md:px-6 xl:px-8">
       <div className="max-w-[1370px] mx-auto">
         <div className="w-full h-[68vh] overflow-hidden rounded-[30px]">
           <iframe

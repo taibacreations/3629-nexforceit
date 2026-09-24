@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { scrollToSection } from "@/lib/scrollToSection"; // apne project ke path ke hisaab se adjust karein
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -100,9 +101,9 @@ const About = () => {
   };
 
   return (
-    <section
+    <section id="ueber-uns"
       ref={sectionRef}
-      className="relative pb-[10vh] mt-[-2vh] pt-[8vh] lg:pt-0"
+      className="relative pt-[44px] md:pb-2 md:pt-[72px] lg:pt-8 lg:mt-[-15vh] 2xl:pb-[10vh] 2xl:mt-[-2vh] "
       style={{ background: "linear-gradient(180deg, #00081E 0%, #000000 100%)" }}
     >
 
@@ -122,16 +123,16 @@ const About = () => {
           
       <div className=" relative max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-10">
         <div className="flex flex-col lg:flex-row justify-between items-center gap-10 lg:gap-8">
-          <div className="max-w-full lg:max-w-[672px] text-center lg:text-left">
+          <div className="max-w-full lg:max-w-[550px] xl:max-w-[672px] text-center lg:text-left">
             <h2
               ref={headingRef}
-              className="font-bold text-[28px] sm:text-[32px] md:text-[36px] lg:text-[40px] leading-[36px] sm:leading-[42px] md:leading-[46px] lg:leading-[50px] uppercase"
+              className="font-bold text-[28px] md:text-[36px] xl:text-[40px] leading-[36px] sm:leading-[42px] md:leading-[46px] lg:leading-[50px] uppercase"
             >
               IT-Kompetenz, auf die Sie sich verlassen können
             </h2>
             <p
               ref={paraOneRef}
-              className="text-[16px] sm:text-[18px] lg:text-[20px] leading-[24px] sm:leading-[25px] mt-[2.5vh] lg:mt-[2vh]"
+              className="text-[16px] md:text-[18px] xl:text-[20px] leading-[24px] sm:leading-[25px] mt-[2.5vh] lg:mt-[2vh]"
             >
               Wir unterstützen Unternehmen bei der Planung, Installation und
               Betreuung moderner IT-Infrastrukturen. Unser Fokus liegt auf
@@ -152,7 +153,8 @@ const About = () => {
                 ref={buttonRef}
                 onMouseEnter={handleButtonEnter}
                 onMouseLeave={handleButtonLeave}
-                className="button relative overflow-hidden text-[18px] sm:text-[20px] lg:text-[24px] w-full sm:w-[280px] lg:w-[308px] h-[52px] sm:h-[55px] lg:h-[59px]"
+                onClick={() => scrollToSection("kontakt")}
+                className="button relative overflow-hidden text-[18px] md:text-[20px] lg:text-[24px] w-full sm:w-[280px] lg:w-[308px] h-[52px] sm:h-[55px] lg:h-[59px]"
                 style={{ transform: "scale(1)" }}
               >
                 <span

@@ -69,28 +69,28 @@ const Area = () => {
   }, []);
 
   return (
-    <section
+    <section id="servicegebiet"
       ref={sectionRef}
-      className="relative bg-black py-16 sm:py-20 lg:py-50 w-full overflow-hidden"
+      className="relative bg-black py-11 md:py-18 xl:py-[110px] 2xl:py-50 w-full overflow-hidden"
     >
       {/* Container: right padding md par 0 hai taake image screen edge tak bleed kar sake;
           lg par wapas symmetric padding, kyunke lg apna alag absolute-bleed image use karta hai */}
-      <div className="max-w-[1480px] mx-auto md:pl-6 md:pr-0 lg:px-17">
+      <div className="max-w-[1480px] mx-auto md:pl-6 md:pr-0 2xl:px-17">
         <div className="flex flex-col md:flex-row lg:grid lg:grid-cols-2 items-center md:items-stretch lg:items-center gap-10 md:gap-8 lg:gap-16">
 
           {/* Text column — mobile: full width; md: half, flex-stretch se height apni content ke hisaab se;
               lg: grid column, original max-w-500 wapas */}
-          <div className="relative z-10 w-full md:w-1/2 lg:w-auto flex flex-col justify-center px-4 md:px-0">
+          <div className="relative z-10 w-full md:w-1/2 lg:w-auto flex flex-col justify-center px-4 2xl:px-0">
             <h2
               ref={headingRef}
-              className="font-bold text-[28px] md:text-[36px] xl:text-[40px] leading-[36px] sm:leading-[44px] lg:leading-[50px] uppercase text-white lg:max-w-[500px]"
+              className=" font-bold text-center md:text-left text-[28px] md:text-[36px] xl:text-[40px] leading-[36px] sm:leading-[44px] lg:leading-[50px] uppercase text-white lg:max-w-[500px]"
             >
               IT-Service direkt bei Ihnen vor Ort
             </h2>
 
             <p
               ref={paraOneRef}
-              className="text-white text-[16px] md:text-[18px] xl:text-[20px] font-normal leading-[25px] mt-5 md:max-w-[715px] lg:max-w-[615px]"
+              className="text-white text-center md:text-left text-[16px] md:text-[18px] xl:text-[20px] font-normal leading-[25px] mt-4 md:max-w-[715px] lg:max-w-[615px]"
             >
               Wir unterstützen Unternehmen und Privatkunden mit
               professionellen IT- und Installationsleistungen direkt vor
@@ -102,7 +102,7 @@ const Area = () => {
 
             <p
               ref={paraTwoRef}
-              className="text-white text-[16px] md:text-[18px] xl:text-[20px] leading-[25px] mt-5 lg:max-w-[615px] font-semibold"
+              className="text-white text-center md:text-left text-[16px] md:text-[18px] xl:text-[20px] leading-[25px] mt-5 lg:max-w-[615px] font-semibold"
             >
               Ihr Standort. Ihre Anforderungen. Unsere technische
               Unterstützung.

@@ -122,7 +122,7 @@ const Contact = () => {
   };
 
   return (
-    <section ref={sectionRef} className=" pt-16 pb-10 sm:pb-16 sm:pt-20">
+    <section id="kontakt" ref={sectionRef} className=" xl:pb-10 2xl:pb-16 2xl:pt-20">
       <div className="max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-10">
         <h2 ref={headingRef} className="font-bold text-[28px] md:text-[36px] xl:text-[40px] leading-[36px] sm:leading-[44px] lg:leading-[50px] text-center text-white pb-[1.5vh] uppercase">
           Lassen Sie uns sprechen
@@ -133,7 +133,7 @@ const Contact = () => {
         </p>
 
         {/* Height ab har breakpoint pe explicit hai; items-stretch se dono children usi height tak stretch hote hain */}
-        <div className="flex flex-col md:flex-row justify-around items-stretch gap-8 mt-[5vh] md:h-[830px] lg:h-[790px] xl:h-[777px]">
+        <div className="flex flex-col md:flex-row justify-around items-stretch gap-8 mt-[3vh] md:mt-[5vh] md:h-[830px] lg:h-[790px] xl:h-[777px]">
           {/* Left: Form card — width ab md aur lg dono par explicit hai */}
           <div
             ref={formWrapRef}
@@ -264,7 +264,7 @@ const Contact = () => {
                     name="consent"
                     checked={formData.consent}
                     onChange={handleChange}
-                    className="mt-1 w-4 h-4 accent-blue-500"
+                    className="w-4 h-4 accent-[#0066FF]"
                   />
                   <span>
                     Ich habe die{" "}

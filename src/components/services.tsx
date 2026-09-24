@@ -54,21 +54,21 @@ const servicesData: ServiceItem[] = [
     title: "Rollouts und Workplace",
     description:
       "Strukturierte Umsetzung von Hardware, Software und Arbeitsplatz Rollouts an einzelnen oder mehreren Standorten.",
-    icon: "service1.svg",
+    icon: "service2.svg",
   },
   {
     id: "07",
     title: "Netzwerkverkabelung und Glasfaser",
     description:
       "Aufbau, Erweiterung und Modernisierung leistungsfähiger Netzwerk und Glasfaser Infrastrukturen für bestehende und neue Standorte.",
-    icon: "service1.svg",
+    icon: "service3.svg",
   },
   {
     id: "08",
     title: "Standortservice und IT Umzüge",
     description:
       "Aufbau, Umbau und Rückbau von IT Infrastruktur bei Standortwechseln, Neueröffnungen und Modernisierungen.",
-    icon: "service1.svg",
+    icon: "service4.svg",
   },
   {
     id: "09",
@@ -79,15 +79,15 @@ const servicesData: ServiceItem[] = [
   },
 ];
 
-const CARD_WIDTH = 400;
+const CARD_WIDTH_DESKTOP = 400;
+const MOBILE_SIDE_PADDING = 16; // px-4 => 16px har taraf
 const CARD_GAP = 30;
-const STEP = CARD_WIDTH + CARD_GAP; // 430
 const CLONE_COUNT = 5;
 const AUTOPLAY_DELAY = 3200;
 const DOTS_COUNT = 3;
 const GROUP_SIZE = Math.ceil(servicesData.length / DOTS_COUNT);
-const DRAG_THRESHOLD = 80; // px — itna drag karne par slide change hogi
-const LG_LEFT_PEEK = CARD_WIDTH / 2; // 200px => lg+ par bilkul "half" card left side peek
+const DRAG_THRESHOLD = 80;
+const LG_LEFT_PEEK = CARD_WIDTH_DESKTOP / 2; // 200px — lg+ par hamesha 400 wali width se calculate hota hai
 
 const extendedCards = [
   ...servicesData.slice(-CLONE_COUNT),
@@ -106,6 +106,7 @@ const Services = () => {
   const isAnimating = useRef(false);
   const autoplayTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const offsetRef = useRef(0); // center/peek offset, breakpoint ke hisaab se
+  const stepRef = useRef(CARD_WIDTH_DESKTOP + CARD_GAP); // card-width + gap, breakpoint ke hisaab se
 
   // Drag tracking refs
   const isDragging = useRef(false);
@@ -114,18 +115,28 @@ const Services = () => {
 
   const [activeDot, setActiveDot] = useState(0);
 
+  // Mobile (< md) par: screen width - dono taraf ki px-4 padding (32px total);
+  // warna (md+): fixed 400 — CSS ke calc(100vw - 32px) se exactly match karta hai
+  const getCardWidth = useCallback(() => {
+    if (typeof window === "undefined") return CARD_WIDTH_DESKTOP;
+    if (window.innerWidth < 768) {
+      return window.innerWidth - MOBILE_SIDE_PADDING * 2;
+    }
+    return CARD_WIDTH_DESKTOP;
+  }, []);
+
   // Breakpoint ke hisaab se offset: lg+ => fixed left-peek; mobile/md => dynamic center
-  const getOffset = useCallback(() => {
+  const getOffset = useCallback((cardWidth: number) => {
     if (typeof window === "undefined") return 0;
     const w = window.innerWidth;
     if (w >= 1024) {
       return LG_LEFT_PEEK;
     }
-    return Math.round((w - CARD_WIDTH) / 2);
+    return Math.round((w - cardWidth) / 2);
   }, []);
 
   const xForIndex = useCallback((index: number) => {
-    return -index * STEP + offsetRef.current;
+    return -index * stepRef.current + offsetRef.current;
   }, []);
 
   const updateActiveDot = useCallback(() => {
@@ -177,12 +188,14 @@ const Services = () => {
     startAutoplay();
   };
 
-  // Initial position + offset setup + resize listener
+  // Initial position + offset/step setup + resize listener
   useEffect(() => {
     if (!trackRef.current) return;
 
     const applyOffset = (animate: boolean) => {
-      offsetRef.current = getOffset();
+      const cardWidth = getCardWidth();
+      stepRef.current = cardWidth + CARD_GAP;
+      offsetRef.current = getOffset(cardWidth);
       const x = xForIndex(currentIndex.current);
       if (animate) {
         gsap.to(trackRef.current, { x, duration: 0.4, ease: "power2.out" });
@@ -201,13 +214,13 @@ const Services = () => {
       if (autoplayTimer.current) clearInterval(autoplayTimer.current);
       window.removeEventListener("resize", handleResize);
     };
-  }, [startAutoplay, getOffset, xForIndex]);
+  }, [startAutoplay, getOffset, getCardWidth, xForIndex]);
 
   // ---------------- Drag / Grab handlers ----------------
   const handlePointerDown = (e: React.PointerEvent) => {
     if (!trackRef.current) return;
     isDragging.current = true;
-    isAnimating.current = false; // kabhi stuck na ho agar autoplay tween beech mein interrupt ho
+    isAnimating.current = false;
     dragStartX.current = e.clientX;
     dragStartTranslateX.current = Number(gsap.getProperty(trackRef.current, "x"));
 
@@ -231,12 +244,12 @@ const Services = () => {
 
     if (Math.abs(delta) > DRAG_THRESHOLD) {
       if (delta < 0) {
-        goToIndex(currentIndex.current + 1); // left ki taraf drag => next
+        goToIndex(currentIndex.current + 1);
       } else {
-        goToIndex(currentIndex.current - 1); // right ki taraf drag => previous
+        goToIndex(currentIndex.current - 1);
       }
     } else {
-      goToIndex(currentIndex.current); // threshold se kam => wapas snap
+      goToIndex(currentIndex.current);
     }
 
     startAutoplay();
@@ -277,11 +290,11 @@ const Services = () => {
   }, []);
 
   return (
-    <section ref={sectionRef} className="relative py-[8vh] overflow-hidden">
-      <div className="max-w-[900px] mx-auto px-4">
+    <section id="dienstleistungen" ref={sectionRef} className="relative overflow-hidden pt-[48px] md:pt-[65px] md:pb-[30px] 2xl:py-[8vh]">
+      <div className="max-w-[930px] mx-auto px-4">
         <h2
           ref={headingRef}
-          className="font-bold text-[28px] md:text-[36px] xl:text-[40px] leading-[36px] sm:leading-[44px] lg:leading-[50px] text-center text-white"
+          className="font-bold text-[28px] md:text-[36px] xl:text-[40px] leading-[36px] sm:leading-[44px] lg:leading-[50px] pb-4 uppercase text-center text-white"
         >
           Unsere IT-Leistungen
         </h2>
@@ -309,7 +322,7 @@ const Services = () => {
           {extendedCards.map((service, index) => (
             <div
               key={`${service.id}-${index}`}
-              className="service-card shrink-0 p-8 w-[400px] h-[400px] bg-[#020B26] border border-white/40 rounded-[20px] flex flex-col"
+              className="service-card shrink-0 p-8 w-[calc(100vw-32px)] md:w-[400px] h-[400px] bg-[#020B26] border border-white/40 rounded-[20px] flex flex-col"
             >
               <div className="flex justify-between">
                 <span className="font-bold text-[55px] text-white/15">{service.id}</span>
