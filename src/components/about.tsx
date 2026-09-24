@@ -102,10 +102,25 @@ const About = () => {
   return (
     <section
       ref={sectionRef}
-      className="pb-[10vh] mt-[-2vh] pt-[8vh] lg:pt-0 overflow-hidden"
+      className="relative pb-[10vh] mt-[-2vh] pt-[8vh] lg:pt-0"
       style={{ background: "linear-gradient(180deg, #00081E 0%, #000000 100%)" }}
     >
-      <div className="max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-10">
+
+          {/* Left SVG */}
+          <img
+            src="/left-shape.svg"
+            alt=""
+            className="absolute left-0 bottom-[-400px] z-0 w-[300px]"
+          />
+
+          {/* Right SVG */}
+          <img
+            src="/right-shape.svg"
+            alt=""
+            className="absolute right-0 bottom-[-500px] z-0 w-[992px]"
+          />
+          
+      <div className=" relative max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-10">
         <div className="flex flex-col lg:flex-row justify-between items-center gap-10 lg:gap-8">
           <div className="max-w-full lg:max-w-[672px] text-center lg:text-left">
             <h2
