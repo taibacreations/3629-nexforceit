@@ -133,7 +133,7 @@ const Contact = () => {
         </p>
 
         {/* Height ab har breakpoint pe explicit hai; items-stretch se dono children usi height tak stretch hote hain */}
-        <div className="flex flex-col md:flex-row justify-around items-stretch gap-8 mt-[3vh] md:mt-[5vh] md:h-[830px] lg:h-[790px] xl:h-[777px]">
+        <div className="flex flex-col md:flex-row overflow-hidden justify-around items-stretch gap-8 mt-[3vh] md:mt-[5vh] h-auto md:max-h-[830px] lg:max-h-[790px] xl:max-h-[777px]">
           {/* Left: Form card — width ab md aur lg dono par explicit hai */}
           <div
             ref={formWrapRef}
@@ -153,7 +153,7 @@ const Contact = () => {
               className="pointer-events-none select-none absolute bottom-30 -right-10 w-[320px] h-[320px] z-0"
             />
 
-            <div className="relative z-10 h-full overflow-y-auto p-7 sm:p-[35px]">
+            <div className="relative z-10 h-full p-7 sm:p-[35px]">
               <div className="flex items-center gap-2 mb-[20px]">
                 <span className="w-4 h-[5px] rounded-2xl bg-[#0066FF]" />
                 <span className="text-[#0066FF] font-bold text-[10px] xl:text-[12px] tracking-[1.5px] uppercase">
