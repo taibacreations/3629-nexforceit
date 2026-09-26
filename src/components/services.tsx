@@ -16,66 +16,66 @@ interface ServiceItem {
 const servicesData: ServiceItem[] = [
   {
     id: "01",
-    title: "Fieldservice und Vor Ort Support",
+    title: "Entstörung und dringende Serviceeinsätze",
     description:
-      "Technische Unterstützung bei Störungen, Installationen, Austauschmaßnahmen und geplanten Serviceeinsätzen direkt beim Kunden.",
-    icon: "service1.svg",
+      "Schnelle technische Unterstützung bei akuten Störungen und Ausfällen in den Bereichen Netzwerk, WLAN, Hardware, Verkabelung und IT Infrastruktur direkt vor Ort.",
+    icon: "service1.png",
   },
   {
     id: "02",
-    title: "Smart Hands und Remote Hands",
+    title: "Fieldservice und Vor Ort Support",
     description:
-      "Ihre IT steuert zentral, wir übernehmen die technische Umsetzung vor Ort nach Ihren Vorgaben und Prozessen.",
-    icon: "service2.svg",
+      "Technische Unterstützung bei Störungen, Installationen, Austauschmaßnahmen und geplanten Serviceeinsätzen direkt beim Kunden.",
+    icon: "service2.png",
   },
   {
     id: "03",
-    title: "Netzwerk und WLAN",
+    title: "Smart Hands und Remote Hands",
     description:
-      "Installation, Erweiterung und Betreuung von Netzwerk und WLAN Infrastrukturen inklusive Access Points, Switches, Verkabelung und technischer Fehleranalyse.",
+      "Ihre IT steuert zentral, wir übernehmen die technische Umsetzung vor Ort nach Ihren Vorgaben und Prozessen.",
     icon: "service3.svg",
   },
   {
     id: "04",
-    title: "Serverraum und IT Infrastruktur",
+    title: " Netzwerk und WLAN",
     description:
-      "Installation, Verkabelung und Austausch von IT Komponenten in Server und Technikräumen inklusive Rack und Patcharbeiten.",
+      "Installation, Erweiterung und Betreuung von Netzwerk und WLAN Infrastrukturen inklusive Access Points, Switches, Verkabelung und technischer Fehleranalyse.",
     icon: "service4.svg",
   },
   {
     id: "05",
-    title: "Entstörung und dringende Serviceeinsätze",
+    title: "Serverraum und IT Infrastruktur",
     description:
-      "Schnelle technische Unterstützung bei akuten Störungen und Ausfällen in den Bereichen Netzwerk, WLAN, Hardware, Verkabelung und IT Infrastruktur direkt vor Ort.",
-    icon: "service1.svg",
+      "Installation, Verkabelung und Austausch von IT Komponenten in Server und Technikräumen inklusive Rack und Patcharbeiten.",
+    icon: "service5.png",
   },
   {
     id: "06",
     title: "Rollouts und Workplace",
     description:
       "Strukturierte Umsetzung von Hardware, Software und Arbeitsplatz Rollouts an einzelnen oder mehreren Standorten.",
-    icon: "service2.svg",
+    icon: "service6.svg",
   },
   {
     id: "07",
     title: "Netzwerkverkabelung und Glasfaser",
     description:
       "Aufbau, Erweiterung und Modernisierung leistungsfähiger Netzwerk und Glasfaser Infrastrukturen für bestehende und neue Standorte.",
-    icon: "service3.svg",
+    icon: "service7.png",
   },
   {
     id: "08",
     title: "Standortservice und IT Umzüge",
     description:
       "Aufbau, Umbau und Rückbau von IT Infrastruktur bei Standortwechseln, Neueröffnungen und Modernisierungen.",
-    icon: "service4.svg",
+    icon: "service8.png",
   },
   {
     id: "09",
     title: "Ihre Anforderungen. Unsere Umsetzung.",
     description:
       "Vom einzelnen Serviceeinsatz bis zum standortübergreifenden Rollout unterstützen wir Unternehmen und IT Dienstleister im Rhein Main Gebiet und im bayerischen Wirtschaftsraum.",
-    icon: "service1.svg",
+    icon: "service9.svg",
   },
 ];
 
@@ -107,6 +107,7 @@ const Services = () => {
   const autoplayTimer = useRef<ReturnType<typeof setInterval> | null>(null);
   const offsetRef = useRef(0); // center/peek offset, breakpoint ke hisaab se
   const stepRef = useRef(CARD_WIDTH_DESKTOP + CARD_GAP); // card-width + gap, breakpoint ke hisaab se
+  const isHovering = useRef(false);
 
   // Drag tracking refs
   const isDragging = useRef(false);
@@ -177,16 +178,27 @@ const Services = () => {
   );
 
   const startAutoplay = useCallback(() => {
-    if (autoplayTimer.current) clearInterval(autoplayTimer.current);
-    autoplayTimer.current = setInterval(() => {
-      goToIndex(currentIndex.current + 1);
-    }, AUTOPLAY_DELAY);
-  }, [goToIndex]);
+  if (isHovering.current) return; // hover ho to autoplay start hi na ho
+  if (autoplayTimer.current) clearInterval(autoplayTimer.current);
+  autoplayTimer.current = setInterval(() => {
+    goToIndex(currentIndex.current + 1);
+  }, AUTOPLAY_DELAY);
+}, [goToIndex]);
 
   const handleDotClick = (dotIndex: number) => {
     goToIndex(CLONE_COUNT + dotIndex * GROUP_SIZE);
     startAutoplay();
   };
+
+  const handleMouseEnter = () => {
+  isHovering.current = true;
+  if (autoplayTimer.current) clearInterval(autoplayTimer.current);
+};
+
+const handleMouseLeave = () => {
+  isHovering.current = false;
+  if (!isDragging.current) startAutoplay();
+};
 
   // Initial position + offset/step setup + resize listener
   useEffect(() => {
@@ -291,7 +303,7 @@ const Services = () => {
 
   return (
     <section id="dienstleistungen" ref={sectionRef} className=" relative bg-black overflow-hidden pt-[48px] md:pt-[65px] md:pb-[30px] 2xl:py-[8vh]">
-      <div className="max-w-[930px] mx-auto px-4">
+      <div className="max-w-[930px] relative z-10 mx-auto px-4">
         <h2
           ref={headingRef}
           className=" font-bold text-[28px] md:text-[36px] xl:text-[40px] leading-[36px] sm:leading-[44px] lg:leading-[50px] pb-4 uppercase text-center text-white"
@@ -310,14 +322,16 @@ const Services = () => {
 
       {/* Slider wrapper — pointer handlers yahan, cursor-grab class bhi yahan */}
       <div
-        ref={wrapperRef}
-        className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden mt-[4vh] select-none cursor-grab active:cursor-grabbing z-10"
-        style={{ touchAction: "pan-y" }}
-        onPointerDown={handlePointerDown}
-        onPointerMove={handlePointerMove}
-        onPointerUp={handlePointerUp}
-        onPointerCancel={handlePointerUp}
-      >
+  ref={wrapperRef}
+  className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden mt-[4vh] select-none cursor-grab active:cursor-grabbing z-10"
+  style={{ touchAction: "pan-y" }}
+  onPointerDown={handlePointerDown}
+  onPointerMove={handlePointerMove}
+  onPointerUp={handlePointerUp}
+  onPointerCancel={handlePointerUp}
+  onMouseEnter={handleMouseEnter}
+  onMouseLeave={handleMouseLeave}
+>
         <div ref={trackRef} className="flex gap-[30px] ">
           {extendedCards.map((service, index) => (
             <div

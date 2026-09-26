@@ -71,7 +71,7 @@ const Footer = () => {
       {/* Mobile-only blend overlay: bg image ko page ke black background ke sath merge karta hai */}
       <div className="absolute top-70 left-0 w-full h-30 -z-10 md:hidden backdrop-blur-md bg-gradient-to-b from-transparent via-[#010304] to-[#010304] pointer-events-none" />
 
-      <div className="max-w-[1480px] mx-auto px-4 md:px-6 xl:px-10 flex flex-col md:flex-row justify-between items-center md:items-start gap-10 md:gap-4 lg:gap-6">
+      <div className="max-w-[1480px] mx-auto px-4 md:px-6 xl:px-10 flex flex-col md:flex-row justify-between items-start gap-10 md:gap-4 lg:gap-6">
 
         {/* -------------------------------------------------quick links-------------------------------------- */}
         {/* self-start => mobile pe parent ke items-center ko ignore kar ke left edge pe rehta hai */}
@@ -134,7 +134,7 @@ const Footer = () => {
             <img
               src="/footer-logo.svg"
               alt="NexForceIT Logo"
-              className="md:w-[290px] xl:w-auto"
+              className="w-[170px] md:w-[280px] xl:w-auto"
             />
           </Link>
           <div className="flex gap-[17px]">
@@ -148,7 +148,7 @@ const Footer = () => {
               <img
                 src="/fb.svg"
                 alt="Facebook"
-                className="md:w-[36px] md:h-[36px] xl:w-auto xl:h-auto"
+                className="w-[35px] h-[35px] md:w-[36px] md:h-[36px] xl:w-auto xl:h-auto"
               />
             </a>
             <a 
@@ -161,7 +161,7 @@ const Footer = () => {
               <img
                 src="/insta.svg"
                 alt="Instagram"
-                className="md:w-[36px] md:h-[36px] xl:w-auto xl:h-auto"
+                className="w-[35px] h-[35px] md:w-[36px] md:h-[36px] xl:w-auto xl:h-auto"
               />
             </a>
           </div>

@@ -10,31 +10,38 @@ const Choose = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
 
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 75%",
-          once: true,
-        },
-        defaults: { ease: "power4.out" },
-      });
+ useEffect(() => {
+  const ctx = gsap.context(() => {
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top 75%",
+        once: true,
+      },
+      defaults: { ease: "power4.out" },
+    });
 
-      tl.fromTo(
-        headingRef.current,
-        { opacity: 0, y: 50, letterSpacing: "0.05em" },
-        { opacity: 1, y: 0, letterSpacing: "0em", duration: 1 }
-      ).fromTo(
-        ".choose-card",
-        { opacity: 0, y: 40, scale: 0.94 },
-        { opacity: 1, y: 0, scale: 1, duration: 0.7, stagger: 0.12 },
-        "-=0.6"
-      );
-    }, sectionRef);
+    tl.fromTo(
+      headingRef.current,
+      { opacity: 0, y: 50, letterSpacing: "0.05em" },
+      { opacity: 1, y: 0, letterSpacing: "0em", duration: 1 }
+    ).fromTo(
+      ".choose-card",
+      { opacity: 0, y: 40, scale: 0.94 },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.7,
+        stagger: 0.12,
+        clearProps: "transform", // 👈 ye add hui — animation ke baad inline transform hatta deta hai
+      },
+      "-=0.6"
+    );
+  }, sectionRef);
 
-    return () => ctx.revert();
-  }, []);
+  return () => ctx.revert();
+}, []);
 
   return (
     <section id='warum-wir' ref={sectionRef} className='bg-black'>
@@ -61,7 +68,7 @@ const Choose = () => {
           <div className="relative z-10 flex flex-col md:grid md:grid-cols-2 lg:flex lg:flex-row justify-center justify-items-center items-center gap-6 md:gap-8 lg:gap-10 xl:gap-17">
 
             {/* card 1 */}
-            <div className="choose-card p-[3px] w-full h-[210px] md:w-[260px] md:h-[225px] lg:w-[270px] lg:h-[250px] xl:w-[290px] xl:h-[275px] rounded-[46px] bg-[linear-gradient(180deg,#081DFF_10%,#1980FB_35%,#000000_75%)]">
+            <div className="choose-card cursor-pointer transition-transform duration-300 ease-out hover:-translate-y-2 hover:scale-105 p-[3px] w-full h-[210px] md:w-[260px] md:h-[225px] lg:w-[270px] lg:h-[250px] xl:w-[290px] xl:h-[275px] rounded-[46px] bg-[linear-gradient(180deg,#081DFF_10%,#1980FB_35%,#000000_75%)]">
               <div className="w-full h-full px-[24px] py-[28px] md:px-[28px] md:py-[32px] lg:px-[32px] lg:py-[38px] xl:px-[38px] xl:py-[50px] flex flex-col items-center justify-center gap-3 md:gap-4 rounded-[43px] bg-black">
                 <span className='flex items-center justify-center'>
                   <img src="choose1.svg" alt="" className="w-9 md:w-10 lg:w-11 xl:w-12 h-auto" />
@@ -73,7 +80,7 @@ const Choose = () => {
             </div>
 
             {/* card 2 */}
-            <div className="choose-card p-[3px] w-full h-[210px] md:w-[260px] md:h-[225px] lg:w-[270px] lg:h-[250px] xl:w-[290px] xl:h-[275px] rounded-[46px] bg-[linear-gradient(180deg,#081DFF_10%,#1980FB_35%,#000000_75%)]">
+            <div className="choose-card cursor-pointer transition-transform duration-300 ease-out hover:-translate-y-2 hover:scale-105 p-[3px] w-full h-[210px] md:w-[260px] md:h-[225px] lg:w-[270px] lg:h-[250px] xl:w-[290px] xl:h-[275px] rounded-[46px] bg-[linear-gradient(180deg,#081DFF_10%,#1980FB_35%,#000000_75%)]">
               <div className="w-full h-full px-[24px] py-[28px] md:px-[28px] md:py-[32px] lg:px-[32px] lg:py-[38px] xl:px-[38px] xl:py-[50px] flex flex-col items-center justify-center gap-3 md:gap-4 rounded-[43px] bg-black">
                 <span className='flex items-center justify-center'>
                   <img src="choose2.svg" alt="" className="w-9 md:w-10 lg:w-11 xl:w-12 h-auto" />
@@ -85,7 +92,7 @@ const Choose = () => {
             </div>
 
             {/* card 3 */}
-            <div className="choose-card p-[3px] w-full h-[210px] md:w-[260px] md:h-[225px] lg:w-[270px] lg:h-[250px] xl:w-[290px] xl:h-[275px] rounded-[46px] bg-[linear-gradient(180deg,#081DFF_10%,#1980FB_35%,#000000_75%)]">
+            <div className="choose-card cursor-pointer transition-transform duration-300 ease-out hover:-translate-y-2 hover:scale-105 p-[3px] w-full h-[210px] md:w-[260px] md:h-[225px] lg:w-[270px] lg:h-[250px] xl:w-[290px] xl:h-[275px] rounded-[46px] bg-[linear-gradient(180deg,#081DFF_10%,#1980FB_35%,#000000_75%)]">
               <div className="w-full h-full px-[24px] py-[28px] md:px-[28px] md:py-[32px] lg:px-[32px] lg:py-[38px] xl:px-[38px] xl:py-[50px] flex flex-col items-center justify-center gap-3 md:gap-4 rounded-[43px] bg-black">
                 <span className='flex items-center justify-center'>
                   <img src="choose3.svg" alt="" className="w-9 md:w-10 lg:w-11 xl:w-12 h-auto" />
@@ -97,10 +104,10 @@ const Choose = () => {
             </div>
 
             {/* card 4 */}
-            <div className="choose-card p-[3px] w-full h-[210px] md:w-[260px] md:h-[225px] lg:w-[270px] lg:h-[250px] xl:w-[290px] xl:h-[275px] rounded-[46px] bg-[linear-gradient(180deg,#081DFF_10%,#1980FB_35%,#000000_75%)]">
+            <div className="choose-card cursor-pointer transition-transform duration-300 ease-out hover:-translate-y-2 hover:scale-105 p-[3px] w-full h-[210px] md:w-[260px] md:h-[225px] lg:w-[270px] lg:h-[250px] xl:w-[290px] xl:h-[275px] rounded-[46px] bg-[linear-gradient(180deg,#081DFF_10%,#1980FB_35%,#000000_75%)]">
               <div className="w-full h-full px-[24px] py-[28px] md:px-[28px] md:py-[32px] lg:px-[32px] lg:py-[38px] xl:px-[38px] xl:py-[50px] flex flex-col items-center justify-center gap-3 md:gap-4 rounded-[43px] bg-black">
                 <span className='flex items-center justify-center'>
-                  <img src="choose3.svg" alt="" className="w-9 md:w-10 lg:w-11 xl:w-12 h-auto" />
+                  <img src="choose4.png" alt="" className="w-9 md:w-10 lg:w-11 xl:w-12 h-auto" />
                 </span>
                 <h4 className='font-semibold text-[20px] md:text-[20px] xl:text-[25px] leading-[30px] xl:leading-[38px] text-center text-white'>
                   Flexible Lösungen

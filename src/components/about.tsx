@@ -121,7 +121,7 @@ const About = () => {
             className="absolute right-0 bottom-[-500px] z-1 w-[992px]"
           />
           
-      <div className=" relative max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-10">
+      <div className=" relative max-w-[1480px] mx-auto px-4 sm:px-6 lg:px-10 z-10">
         <div className="flex flex-col lg:flex-row justify-between items-center gap-10 lg:gap-8">
           <div className="max-w-full lg:max-w-[550px] xl:max-w-[672px] text-center lg:text-left">
             <h2
@@ -173,7 +173,7 @@ const About = () => {
           >
             <img
               ref={imageRef}
-              src="/about.webp"
+              src="/about-peeps.png"
               alt="about"
               className="w-full h-auto"
             />
