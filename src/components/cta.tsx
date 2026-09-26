@@ -111,7 +111,7 @@ const Cta = () => {
               className="absolute inset-0 -skew-x-12 bg-gradient-to-r from-transparent via-white/40 to-transparent"
               style={{ transform: "translateX(-150%)" }}
             />
-            <span className="relative z-10">Jetzt Kontakt aufnehmen</span>
+            <span className="relative z-50">Jetzt Kontakt aufnehmen</span>
           </button>
         </div>
         

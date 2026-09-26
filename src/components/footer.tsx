@@ -69,9 +69,9 @@ const Footer = () => {
       style={{ backgroundImage: "url('/footer-bg.png')" }}
     >
       {/* Mobile-only blend overlay: bg image ko page ke black background ke sath merge karta hai */}
-      <div className="absolute top-70 left-0 w-full h-30 -z-10 md:hidden backdrop-blur-md bg-gradient-to-b from-transparent via-[#010304] to-[#010304] pointer-events-none" />
+      <div className="absolute top-70 left-0 w-full h-30 z-10 md:hidden backdrop-blur-md bg-gradient-to-b from-transparent via-[#010304] to-[#010304] pointer-events-none" />
 
-      <div className="max-w-[1480px] mx-auto px-4 md:px-6 xl:px-10 flex flex-col md:flex-row justify-between items-start gap-10 md:gap-4 lg:gap-6">
+      <div className="relative max-w-[1480px] z-50 mx-auto px-4 md:px-6 xl:px-10 flex flex-col md:flex-row justify-between items-start gap-10 md:gap-4 lg:gap-6">
 
         {/* -------------------------------------------------quick links-------------------------------------- */}
         {/* self-start => mobile pe parent ke items-center ko ignore kar ke left edge pe rehta hai */}

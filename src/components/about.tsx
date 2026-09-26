@@ -107,6 +107,16 @@ const About = () => {
       style={{ background: "linear-gradient(180deg, #00081E 0%, #000000 100%)" }}
     >
 
+       {/* Blur Overlay */}
+  <div
+    className="absolute left-0 top-[-10vh] lg:top-[-25vh] w-full h-[80vh] lg:h-[60vh] pointer-events-none z-[2]"
+    style={{
+      background:
+        "linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.25) 30%, rgba(0,0,0,0.7) 65%, #000 100%)",
+      filter: "blur(35px)",
+    }}
+  />
+
           {/* Left SVG */}
           <img
             src="/left-shape.svg"

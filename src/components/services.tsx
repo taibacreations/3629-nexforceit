@@ -336,7 +336,7 @@ const handleMouseLeave = () => {
           {extendedCards.map((service, index) => (
             <div
               key={`${service.id}-${index}`}
-              className="service-card shrink-0 p-8 w-[calc(100vw-32px)] md:w-[400px] h-[400px] bg-[#020B26] border border-white/40 rounded-[20px] flex flex-col"
+              className="service-card shrink-0  p-8 w-[calc(100vw-32px)] md:w-[400px] h-auto min-h-[400px] bg-[#020B26] border border-white/40 rounded-[20px] flex flex-col"
             >
               <div className="flex justify-between">
                 <span className="font-bold text-[55px] text-white/15">{service.id}</span>
