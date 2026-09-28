@@ -153,10 +153,7 @@ const About = () => {
               ref={paraTwoRef}
               className="text-[16px] sm:text-[18px] lg:text-[20px] leading-[24px] sm:leading-[25px] mt-[2.5vh] lg:mt-[3vh]"
             >
-              Ob Netzwerk, Server, Hardware, Software oder Verkabelung – wir
-              verbinden technisches Know-how mit einem praxisorientierten
-              Service und passen unsere Leistungen an die individuellen
-              Anforderungen unserer Kunden an.
+              Ob Netzwerk, Server, Hardware oder Verkabelung: Wir verbinden technisches Fachwissen mit einem praxisorientierten Service und passen unsere Leistungen individuell an die Anforderungen unserer Kunden an.
             </p>
             <div ref={buttonWrapRef} className="mt-[3.5vh] lg:mt-[4vh]">
               <button

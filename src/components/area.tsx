@@ -92,12 +92,7 @@ const Area = () => {
               ref={paraOneRef}
               className="text-white text-center md:text-left text-[16px] md:text-[18px] xl:text-[20px] font-normal leading-[25px] mt-4 md:max-w-[715px] lg:max-w-[615px]"
             >
-              Wir unterstützen Unternehmen und Privatkunden mit
-              professionellen IT- und Installationsleistungen direkt vor
-              Ort. Unser Service ist auf eine zuverlässige und flexible
-              Zusammenarbeit ausgelegt – unabhängig davon, ob es sich
-              um einen einzelnen Einsatz oder ein umfangreicheres Projekt
-              handelt.
+              Wir unterstützen Unternehmen und Privatkunden mit professionellen Leistungen in den Bereichen IT und Installation direkt vor Ort. Unser Service ist auf eine zuverlässige und flexible Zusammenarbeit ausgelegt, unabhängig davon, ob es sich um einen einzelnen Einsatz oder ein umfangreicheres Projekt handelt.
             </p>
 
             <p

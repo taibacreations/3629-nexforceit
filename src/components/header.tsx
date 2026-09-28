@@ -7,7 +7,7 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
 const navLinks = [
-  { label: "Heim", id: "heim" },
+  
   { label: "Über uns", id: "ueber-uns" },
   { label: "Dienstleistungen", id: "dienstleistungen" },
   { label: "Warum wir?", id: "warum-wir" },
@@ -76,7 +76,7 @@ const Header = () => {
   const pillRef = useRef<HTMLDivElement>(null);
   const buttonWrapRef = useRef<HTMLDivElement>(null);
   const linkRefs = useRef<Array<HTMLAnchorElement | null>>([]);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(-1);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
@@ -91,12 +91,28 @@ const Header = () => {
     setMounted(true);
   }, []);
 
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    handleScroll();
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+ useEffect(() => {
+  const handleScroll = () => {
+    setScrolled(window.scrollY > 20);
+
+    const firstSection = document.getElementById("ueber-uns");
+    const headerHeight = headerRef.current?.offsetHeight ?? 0;
+
+    if (
+      firstSection &&
+      window.scrollY <
+        firstSection.offsetTop - headerHeight - SCROLL_EXTRA_GAP
+    ) {
+      setActiveIndex(-1);
+    }
+  };
+
+  handleScroll();
+
+  window.addEventListener("scroll", handleScroll, { passive: true });
+
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
 
   const scrollToSection = (id: string, index: number) => {
     const el = document.getElementById(id);
@@ -150,7 +166,9 @@ const Header = () => {
   };
 
   const movePill = (index: number) => {
-    const link = linkRefs.current[index];
+  if (index < 0) return;
+
+  const link = linkRefs.current[index];
     const pill = pillRef.current;
     const nav = navRef.current;
     if (!link || !pill || !nav) return;
@@ -182,11 +200,21 @@ const Header = () => {
   // Jab bhi activeIndex change ho (scroll-spy ya click se) — agar koi hover nahi ho raha,
   // pill ko us naye active link par smoothly move karo. Hover hamesha priority leta hai.
   useEffect(() => {
-    if (hoveredIndex === null) {
+  if (hoveredIndex === null) {
+    if (activeIndex === -1) {
+      gsap.to(pillRef.current, {
+        opacity: 0,
+        duration: 0.2,
+      });
+    } else {
+      gsap.to(pillRef.current, {
+        opacity: 1,
+        duration: 0.2,
+      });
       movePill(activeIndex);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeIndex]);
+  }
+}, [activeIndex]);
 
   // ---------------- Scroll-spy: manual scroll par bhi sahi section active ho ----------------
   useEffect(() => {
@@ -250,7 +278,12 @@ const Header = () => {
           { opacity: 1, y: 0, duration: 0.6, stagger: 0.08 },
           "-=0.5"
         )
-        .fromTo(pillRef.current, { opacity: 0 }, { opacity: 1, duration: 0.4 }, "-=0.4")
+        .fromTo(
+          pillRef.current,
+          { opacity: 0 },
+          { opacity: 0, duration: 0.4 },
+          "-=0.4"
+        )
         .fromTo(
           buttonWrapRef.current,
           { opacity: 0, y: -10 },
@@ -388,7 +421,14 @@ const Header = () => {
           className="relative hidden xl:flex items-center gap-3 2xl:gap-5 rounded-full px-6 py-5 xl:px-7 xl:py-5 bg-[url(/nav.png)] bg-center bg-cover"
           onMouseLeave={() => {
             setHoveredIndex(null);
-            movePill(activeIndex);
+            if (activeIndex >= 0) {
+              movePill(activeIndex);
+            } else {
+              gsap.to(pillRef.current, {
+                opacity: 0,
+                duration: 0.2,
+              });
+            }
           }}
         >
           <div
@@ -404,9 +444,13 @@ const Header = () => {
                 linkRefs.current[index] = el;
               }}
               onMouseEnter={() => {
-                setHoveredIndex(index);
-                movePill(index);
-              }}
+              setHoveredIndex(index);
+              gsap.to(pillRef.current, {
+                opacity: 1,
+                duration: 0.2,
+              });
+              movePill(index);
+            }}
               onClick={(e) => handleNavClick(e, item.id, index)}
               className={`relative z-10 text-[14px] xl:text-[16px] py-1 px-3.5 whitespace-nowrap transition-colors duration-300 ${
                 index === displayIndex
