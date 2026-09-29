@@ -183,7 +183,7 @@ const Footer = () => {
                 href="mailto:nomerahmadmalik@gmail.com"
                 className="text-[16px] xl:text-[18px] text-white/80 hover:text-white transition-colors break-words md:max-w-[150px] lg:max-w-none"
               >
-                nomerahmadmalik@gmail.com
+                info@nexforce-it.com
               </a>
             </div>
             <div className="flex flex-row gap-[10px] xl:gap-[17px] items-center">
