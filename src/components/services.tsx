@@ -113,6 +113,8 @@ const Services = () => {
   const isDragging = useRef(false);
   const dragStartX = useRef(0);
   const dragStartTranslateX = useRef(0);
+  // Drag ke dauran fast/smooth x-updates ke liye GSAP quickSetter (gsap.set se zyada performant)
+  const quickXRef = useRef<((value: number) => void) | null>(null);
 
   const [activeDot, setActiveDot] = useState(0);
 
@@ -157,15 +159,16 @@ const Services = () => {
         x: xForIndex(targetIndex),
         duration: 0.9,
         ease: "power3.inOut",
+        force3D: true,
         onComplete: () => {
           let finalIndex = targetIndex;
 
           if (finalIndex >= CLONE_COUNT + servicesData.length) {
             finalIndex -= servicesData.length;
-            gsap.set(trackRef.current, { x: xForIndex(finalIndex) });
+            gsap.set(trackRef.current, { x: xForIndex(finalIndex), force3D: true });
           } else if (finalIndex < CLONE_COUNT) {
             finalIndex += servicesData.length;
-            gsap.set(trackRef.current, { x: xForIndex(finalIndex) });
+            gsap.set(trackRef.current, { x: xForIndex(finalIndex), force3D: true });
           }
 
           currentIndex.current = finalIndex;
@@ -210,9 +213,9 @@ const handleMouseLeave = () => {
       offsetRef.current = getOffset(cardWidth);
       const x = xForIndex(currentIndex.current);
       if (animate) {
-        gsap.to(trackRef.current, { x, duration: 0.4, ease: "power2.out" });
+        gsap.to(trackRef.current, { x, duration: 0.4, ease: "power2.out", force3D: true });
       } else {
-        gsap.set(trackRef.current, { x });
+        gsap.set(trackRef.current, { x, force3D: true });
       }
     };
 
@@ -239,18 +242,28 @@ const handleMouseLeave = () => {
     gsap.killTweensOf(trackRef.current);
     if (autoplayTimer.current) clearInterval(autoplayTimer.current);
 
+    // Har pointermove par naya tween banane ke bajaye ek hi quickSetter reuse karo — mobile drag ko bohot smooth karta hai
+    quickXRef.current = gsap.quickSetter(trackRef.current, "x", "px") as (
+      value: number
+    ) => void;
+
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!isDragging.current || !trackRef.current) return;
     const delta = e.clientX - dragStartX.current;
-    gsap.set(trackRef.current, { x: dragStartTranslateX.current + delta });
+    if (quickXRef.current) {
+      quickXRef.current(dragStartTranslateX.current + delta);
+    } else {
+      gsap.set(trackRef.current, { x: dragStartTranslateX.current + delta });
+    }
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
     if (!isDragging.current) return;
     isDragging.current = false;
+    quickXRef.current = null;
 
     const delta = e.clientX - dragStartX.current;
 
@@ -302,7 +315,7 @@ const handleMouseLeave = () => {
   }, []);
 
   return (
-    <section id="dienstleistungen" ref={sectionRef} className=" relative bg-black overflow-hidden pt-[48px] md:pt-[65px] md:pb-[30px] 2xl:py-[8vh]">
+    <section id="dienstleistungen" ref={sectionRef} className=" relative bg-black overflow-x-hidden pt-[48px] md:pt-[65px] md:pb-[30px] 2xl:py-[8vh]">
       <div className="max-w-[930px] relative z-10 mx-auto px-4">
         <h2
           ref={headingRef}
@@ -323,7 +336,7 @@ const handleMouseLeave = () => {
       {/* Slider wrapper — pointer handlers yahan, cursor-grab class bhi yahan */}
       <div
   ref={wrapperRef}
-  className="relative w-screen left-1/2 -translate-x-1/2 overflow-hidden mt-[4vh] select-none cursor-grab active:cursor-grabbing z-10"
+  className="relative w-screen left-1/2 -translate-x-1/2 overflow-x-hidden pb-2 mt-[4vh] select-none cursor-grab active:cursor-grabbing z-10"
   style={{ touchAction: "pan-y" }}
   onPointerDown={handlePointerDown}
   onPointerMove={handlePointerMove}
@@ -332,7 +345,11 @@ const handleMouseLeave = () => {
   onMouseEnter={handleMouseEnter}
   onMouseLeave={handleMouseLeave}
 >
-        <div ref={trackRef} className="flex gap-[30px] ">
+        <div
+          ref={trackRef}
+          className="flex gap-[30px] "
+          style={{ willChange: "transform" }}
+        >
           {extendedCards.map((service, index) => (
             <div
               key={`${service.id}-${index}`}
@@ -358,7 +375,7 @@ const handleMouseLeave = () => {
       </div>
 
       {/* Dots */}
-      <div className="flex justify-center items-center gap-2 mt-9">
+      <div className="flex justify-center items-center gap-2 mt-7">
         {Array.from({ length: DOTS_COUNT }).map((_, i) => (
           <button
             key={i}
