@@ -180,7 +180,7 @@ const Footer = () => {
             <div className="flex flex-row gap-[10px] xl:gap-[17px] items-center">
               <img src="/mail.svg" alt="" className="shrink-0" />
               <a 
-                href="mailto:nomerahmadmalik@gmail.com"
+                href="mailto:info@nexforce-it.com"
                 className="text-[16px] xl:text-[18px] text-white/80 hover:text-white transition-colors break-words md:max-w-[150px] lg:max-w-none"
               >
                 info@nexforce-it.com
