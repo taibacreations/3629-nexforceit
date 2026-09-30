@@ -87,7 +87,8 @@ const AUTOPLAY_DELAY = 3200;
 const DOTS_COUNT = 3;
 const GROUP_SIZE = Math.ceil(servicesData.length / DOTS_COUNT);
 const DRAG_THRESHOLD = 80;
-const LG_LEFT_PEEK = CARD_WIDTH_DESKTOP / 2; // 200px — lg+ par hamesha 400 wali width se calculate hota hai
+const FLICK_VELOCITY = 0.4; // px/ms
+const LG_LEFT_PEEK = CARD_WIDTH_DESKTOP / 2; // 200px
 
 const extendedCards = [
   ...servicesData.slice(-CLONE_COUNT),
@@ -105,21 +106,22 @@ const Services = () => {
   const currentIndex = useRef(CLONE_COUNT);
   const isAnimating = useRef(false);
   const autoplayTimer = useRef<ReturnType<typeof setInterval> | null>(null);
-  const offsetRef = useRef(0); // center/peek offset, breakpoint ke hisaab se
-  const stepRef = useRef(CARD_WIDTH_DESKTOP + CARD_GAP); // card-width + gap, breakpoint ke hisaab se
+  const offsetRef = useRef(0);
+  const stepRef = useRef(CARD_WIDTH_DESKTOP + CARD_GAP);
   const isHovering = useRef(false);
 
   // Drag tracking refs
   const isDragging = useRef(false);
   const dragStartX = useRef(0);
   const dragStartTranslateX = useRef(0);
-  // Drag ke dauran fast/smooth x-updates ke liye GSAP quickSetter (gsap.set se zyada performant)
   const quickXRef = useRef<((value: number) => void) | null>(null);
+  const lastDelta = useRef(0);
+  const lastMoveX = useRef(0);
+  const lastMoveTime = useRef(0);
+  const velocity = useRef(0); // px/ms
 
   const [activeDot, setActiveDot] = useState(0);
 
-  // Mobile (< md) par: screen width - dono taraf ki px-4 padding (32px total);
-  // warna (md+): fixed 400 — CSS ke calc(100vw - 32px) se exactly match karta hai
   const getCardWidth = useCallback(() => {
     if (typeof window === "undefined") return CARD_WIDTH_DESKTOP;
     if (window.innerWidth < 768) {
@@ -128,7 +130,6 @@ const Services = () => {
     return CARD_WIDTH_DESKTOP;
   }, []);
 
-  // Breakpoint ke hisaab se offset: lg+ => fixed left-peek; mobile/md => dynamic center
   const getOffset = useCallback((cardWidth: number) => {
     if (typeof window === "undefined") return 0;
     const w = window.innerWidth;
@@ -144,10 +145,30 @@ const Services = () => {
 
   const updateActiveDot = useCallback(() => {
     const realIndex =
-      ((currentIndex.current - CLONE_COUNT) % servicesData.length +
+      (((currentIndex.current - CLONE_COUNT) % servicesData.length) +
         servicesData.length) %
       servicesData.length;
     setActiveDot(Math.min(Math.floor(realIndex / GROUP_SIZE), DOTS_COUNT - 1));
+  }, []);
+
+  // Track ki asal position se index nikalo, aur clone zone se bahar ho to wrap karo
+  const syncIndexFromPosition = useCallback(() => {
+    if (!trackRef.current) return;
+    const x = Number(gsap.getProperty(trackRef.current, "x"));
+    let idx = Math.round((offsetRef.current - x) / stepRef.current);
+
+    if (idx >= CLONE_COUNT + servicesData.length) {
+      idx -= servicesData.length;
+      gsap.set(trackRef.current, {
+        x: x + servicesData.length * stepRef.current,
+      });
+    } else if (idx < CLONE_COUNT) {
+      idx += servicesData.length;
+      gsap.set(trackRef.current, {
+        x: x - servicesData.length * stepRef.current,
+      });
+    }
+    currentIndex.current = idx;
   }, []);
 
   const goToIndex = useCallback(
@@ -165,10 +186,16 @@ const Services = () => {
 
           if (finalIndex >= CLONE_COUNT + servicesData.length) {
             finalIndex -= servicesData.length;
-            gsap.set(trackRef.current, { x: xForIndex(finalIndex), force3D: true });
+            gsap.set(trackRef.current, {
+              x: xForIndex(finalIndex),
+              force3D: true,
+            });
           } else if (finalIndex < CLONE_COUNT) {
             finalIndex += servicesData.length;
-            gsap.set(trackRef.current, { x: xForIndex(finalIndex), force3D: true });
+            gsap.set(trackRef.current, {
+              x: xForIndex(finalIndex),
+              force3D: true,
+            });
           }
 
           currentIndex.current = finalIndex;
@@ -181,27 +208,30 @@ const Services = () => {
   );
 
   const startAutoplay = useCallback(() => {
-  if (isHovering.current) return; // hover ho to autoplay start hi na ho
-  if (autoplayTimer.current) clearInterval(autoplayTimer.current);
-  autoplayTimer.current = setInterval(() => {
-    goToIndex(currentIndex.current + 1);
-  }, AUTOPLAY_DELAY);
-}, [goToIndex]);
+    if (isHovering.current) return;
+    if (autoplayTimer.current) clearInterval(autoplayTimer.current);
+    autoplayTimer.current = setInterval(() => {
+      goToIndex(currentIndex.current + 1);
+    }, AUTOPLAY_DELAY);
+  }, [goToIndex]);
 
   const handleDotClick = (dotIndex: number) => {
     goToIndex(CLONE_COUNT + dotIndex * GROUP_SIZE);
     startAutoplay();
   };
 
-  const handleMouseEnter = () => {
-  isHovering.current = true;
-  if (autoplayTimer.current) clearInterval(autoplayTimer.current);
-};
+  // Hover sirf mouse ke liye (touch par isHovering atakta tha)
+  const handlePointerEnter = (e: React.PointerEvent) => {
+    if (e.pointerType !== "mouse") return;
+    isHovering.current = true;
+    if (autoplayTimer.current) clearInterval(autoplayTimer.current);
+  };
 
-const handleMouseLeave = () => {
-  isHovering.current = false;
-  if (!isDragging.current) startAutoplay();
-};
+  const handlePointerLeave = (e: React.PointerEvent) => {
+    if (e.pointerType !== "mouse") return;
+    isHovering.current = false;
+    if (!isDragging.current) startAutoplay();
+  };
 
   // Initial position + offset/step setup + resize listener
   useEffect(() => {
@@ -213,13 +243,18 @@ const handleMouseLeave = () => {
       offsetRef.current = getOffset(cardWidth);
       const x = xForIndex(currentIndex.current);
       if (animate) {
-        gsap.to(trackRef.current, { x, duration: 0.4, ease: "power2.out", force3D: true });
+        gsap.to(trackRef.current, {
+          x,
+          duration: 0.4,
+          ease: "power2.out",
+          force3D: true,
+        });
       } else {
         gsap.set(trackRef.current, { x, force3D: true });
       }
     };
 
-    applyOffset(false); // pehli dafa, bina animation ke
+    applyOffset(false);
     startAutoplay();
 
     const handleResize = () => applyOffset(true);
@@ -234,17 +269,27 @@ const handleMouseLeave = () => {
   // ---------------- Drag / Grab handlers ----------------
   const handlePointerDown = (e: React.PointerEvent) => {
     if (!trackRef.current) return;
-    isDragging.current = true;
-    isAnimating.current = false;
-    dragStartX.current = e.clientX;
-    dragStartTranslateX.current = Number(gsap.getProperty(trackRef.current, "x"));
+    if (e.pointerType === "mouse" && e.button !== 0) return;
 
     gsap.killTweensOf(trackRef.current);
+    isAnimating.current = false;
     if (autoplayTimer.current) clearInterval(autoplayTimer.current);
 
-    // Har pointermove par naya tween banane ke bajaye ek hi quickSetter reuse karo — mobile drag ko bohot smooth karta hai
+    // Tween beech mein kata ho to index asal position se sync karo
+    syncIndexFromPosition();
+
+    isDragging.current = true;
+    dragStartX.current = e.clientX;
+    dragStartTranslateX.current = Number(
+      gsap.getProperty(trackRef.current, "x")
+    );
+    lastDelta.current = 0;
+    lastMoveX.current = e.clientX;
+    lastMoveTime.current = performance.now();
+    velocity.current = 0;
+
     quickXRef.current = gsap.quickSetter(trackRef.current, "x", "px") as (
-      value: number
+      v: number
     ) => void;
 
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
@@ -252,27 +297,36 @@ const handleMouseLeave = () => {
 
   const handlePointerMove = (e: React.PointerEvent) => {
     if (!isDragging.current || !trackRef.current) return;
+
     const delta = e.clientX - dragStartX.current;
-    if (quickXRef.current) {
-      quickXRef.current(dragStartTranslateX.current + delta);
-    } else {
-      gsap.set(trackRef.current, { x: dragStartTranslateX.current + delta });
+    lastDelta.current = delta;
+
+    const now = performance.now();
+    const dt = now - lastMoveTime.current;
+    if (dt > 0) {
+      velocity.current = (e.clientX - lastMoveX.current) / dt;
     }
+    lastMoveX.current = e.clientX;
+    lastMoveTime.current = now;
+
+    quickXRef.current?.(dragStartTranslateX.current + delta);
   };
 
-  const handlePointerUp = (e: React.PointerEvent) => {
+  const handlePointerUp = () => {
     if (!isDragging.current) return;
     isDragging.current = false;
     quickXRef.current = null;
 
-    const delta = e.clientX - dragStartX.current;
+    // e.clientX ki jagah last known delta (pointercancel mein safe)
+    const delta = lastDelta.current;
+    const v = velocity.current;
 
-    if (Math.abs(delta) > DRAG_THRESHOLD) {
-      if (delta < 0) {
-        goToIndex(currentIndex.current + 1);
-      } else {
-        goToIndex(currentIndex.current - 1);
-      }
+    const distThreshold = Math.min(DRAG_THRESHOLD, stepRef.current * 0.15);
+    const isFlick = Math.abs(v) > FLICK_VELOCITY;
+
+    if (Math.abs(delta) > distThreshold || isFlick) {
+      const dir = isFlick ? (v < 0 ? 1 : -1) : delta < 0 ? 1 : -1;
+      goToIndex(currentIndex.current + dir);
     } else {
       goToIndex(currentIndex.current);
     }
@@ -315,11 +369,15 @@ const handleMouseLeave = () => {
   }, []);
 
   return (
-    <section id="dienstleistungen" ref={sectionRef} className=" relative bg-black overflow-x-hidden pt-[48px] md:pt-[65px] md:pb-[30px] 2xl:py-[8vh]">
+    <section
+      id="dienstleistungen"
+      ref={sectionRef}
+      className="relative bg-black overflow-x-hidden pt-[48px] md:pt-[65px] md:pb-[30px] 2xl:py-[8vh]"
+    >
       <div className="max-w-[930px] relative z-10 mx-auto px-4">
         <h2
           ref={headingRef}
-          className=" font-bold text-[28px] md:text-[36px] xl:text-[40px] leading-[36px] sm:leading-[44px] lg:leading-[50px] pb-4 uppercase text-center text-white"
+          className="font-bold text-[28px] md:text-[36px] xl:text-[40px] leading-[36px] sm:leading-[44px] lg:leading-[50px] pb-4 uppercase text-center text-white"
         >
           Unsere IT-Leistungen
         </h2>
@@ -333,32 +391,38 @@ const handleMouseLeave = () => {
         </p>
       </div>
 
-      {/* Slider wrapper — pointer handlers yahan, cursor-grab class bhi yahan */}
+      {/* Slider wrapper */}
       <div
-  ref={wrapperRef}
-  className="relative w-screen left-1/2 -translate-x-1/2 overflow-x-hidden pb-2 mt-[4vh] select-none cursor-grab active:cursor-grabbing z-10"
-  style={{ touchAction: "pan-y" }}
-  onPointerDown={handlePointerDown}
-  onPointerMove={handlePointerMove}
-  onPointerUp={handlePointerUp}
-  onPointerCancel={handlePointerUp}
-  onMouseEnter={handleMouseEnter}
-  onMouseLeave={handleMouseLeave}
->
+        ref={wrapperRef}
+        className="relative w-screen left-1/2 -translate-x-1/2 overflow-x-hidden pb-2 mt-[4vh] select-none cursor-grab active:cursor-grabbing z-10"
+        style={{ touchAction: "pan-y" }}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerUp}
+        onPointerEnter={handlePointerEnter}
+        onPointerLeave={handlePointerLeave}
+      >
         <div
           ref={trackRef}
-          className="flex gap-[30px] "
+          className="flex gap-[30px]"
           style={{ willChange: "transform" }}
         >
           {extendedCards.map((service, index) => (
             <div
               key={`${service.id}-${index}`}
-              className="service-card shrink-0  p-8 w-[calc(100vw-32px)] md:w-[400px] h-auto min-h-[400px] bg-[#020B26] border border-white/40 rounded-[20px] flex flex-col"
+              className="service-card shrink-0 p-8 w-[calc(100vw-32px)] md:w-[400px] h-auto min-h-[400px] bg-[#020B26] border border-white/40 rounded-[20px] flex flex-col"
             >
               <div className="flex justify-between">
-                <span className="font-bold text-[55px] text-white/15">{service.id}</span>
+                <span className="font-bold text-[55px] text-white/15">
+                  {service.id}
+                </span>
                 <span>
-                  <img src={service.icon} alt="service-logo" draggable={false} />
+                  <img
+                    src={service.icon}
+                    alt="service-logo"
+                    draggable={false}
+                  />
                 </span>
               </div>
               <div className="max-w-[314px]">
