@@ -1,0 +1,59 @@
+<svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+<foreignObject x="-87.1577" y="-87.1577" width="228.277" height="228.277">
+<div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(37.59px);clip-path:url(#bgblur_0_2025_2_clip_path);height:100%;width:100%"></div>
+</foreignObject>
+
+<g filter="url(#filter0_ii_2025_2)" data-figma-bg-blur-radius="75.1799">
+<circle cx="26.981" cy="26.981" r="26.981" fill="#D9D9D9" fill-opacity="0.01"/>
+<circle cx="26.981" cy="26.981" r="26.3438" stroke="url(#paint0_linear_2025_2)" stroke-width="1.27424"/>
+</g>
+
+<!-- LinkedIn logo only -->
+<g fill="white">
+  <rect x="18.15" y="23.05" width="3.45" height="12.1" rx="0.5"/>
+  <circle cx="19.875" cy="19.55" r="1.72"/>
+  <path d="M24.35 23.05H27.7V24.7C28.48 23.5 29.78 22.75 31.45 22.75C34.65 22.75 36.15 24.8 36.15 28.45V35.15H32.75V29.05C32.75 27.25 32.25 26.05 30.6 26.05C28.95 26.05 27.7 27.25 27.7 29.5V35.15H24.35V23.05Z"/>
+</g>
+
+<defs>
+
+<filter id="filter0_ii_2025_2" x="-87.1577" y="-87.1577" width="228.277" height="228.277" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+
+<feOffset dx="-87.1577" dy="87.1577"/>
+<feGaussianBlur stdDeviation="43.5789"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+
+<feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.02 0"/>
+
+<feBlend mode="normal" in2="shape" result="effect1_innerShadow_2025_2"/>
+
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+
+<feOffset dx="87.1577" dy="-87.1577"/>
+<feGaussianBlur stdDeviation="43.5789"/>
+<feComposite in2="hardAlpha" operator="arithmetic" k2="-1" k3="1"/>
+
+<feColorMatrix type="matrix" values="0 0 0 0 0.646745 0 0 0 0 0.646745 0 0 0 0 0.646745 0 0 0 0.119 0"/>
+
+<feBlend mode="normal" in2="effect1_innerShadow_2025_2" result="effect2_innerShadow_2025_2"/>
+
+</filter>
+
+<clipPath id="bgblur_0_2025_2_clip_path" transform="translate(87.1577 87.1577)">
+<circle cx="26.981" cy="26.981" r="26.981"/>
+</clipPath>
+
+<linearGradient id="paint0_linear_2025_2" x1="26.981" y1="0" x2="26.981" y2="53.9619" gradientUnits="userSpaceOnUse">
+<stop stop-color="white"/>
+<stop offset="1" stop-color="#999999" stop-opacity="0"/>
+</linearGradient>
+
+</defs>
+
+</svg>

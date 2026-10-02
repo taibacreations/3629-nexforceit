@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -77,7 +78,7 @@ const Contact = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.firstName || !formData.lastName || !formData.email || !formData.subject) {
+    if (!formData.firstName || !formData.lastName || !formData.email) {
       setStatus("error");
       setErrorMsg("Bitte füllen Sie alle Pflichtfelder aus.");
       return;
@@ -144,7 +145,7 @@ const Contact = () => {
         </p>
 
         {/* Height ab har breakpoint pe explicit hai; items-stretch se dono children usi height tak stretch hote hain */}
-        <div className="flex flex-col md:flex-row overflow-hidden justify-around items-stretch gap-8 mt-[3vh] md:mt-[5vh] h-auto md:max-h-[830px] lg:max-h-[790px] xl:max-h-[777px]">
+        <div className="flex flex-col md:flex-row overflow-hidden justify-around items-stretch gap-8 mt-[3vh] md:mt-[5vh] h-auto md:max-h-[830px] lg:max-h-[790px] xl:max-h-[700px]">
           {/* Left: Form card — width ab md aur lg dono par explicit hai */}
           <div
             ref={formWrapRef}
@@ -241,7 +242,7 @@ const Contact = () => {
                   />
                 </div>
 
-                <div>
+                {/* <div>
                   <label className="block text-white text-[14px] xl:text-[16px] font-semibold mb-1.5">Betreff *</label>
                   <select
                     name="subject"
@@ -255,7 +256,7 @@ const Contact = () => {
                     <option value="rollout" className="bg-[#060B1F]">Rollouts und Workplace</option>
                     <option value="sonstiges" className="bg-[#060B1F]">Sonstiges</option>
                   </select>
-                </div>
+                </div> */}
 
                 <div>
                   <label className="block text-white text-[14px] xl:text-[16px] font-semibold mb-1.5">Ihre Nachricht</label>
@@ -279,7 +280,12 @@ const Contact = () => {
                   />
                   <span>
                     Ich habe die{" "}
-                    <a href="/datenschutz" className="text-[#0066FF] underline">Datenschutzerklärung</a>{" "}
+                    <Link
+  href="/datenschutz"
+  className="text-[#0066FF] underline hover:text-white transition-colors"
+>
+  Datenschutzerklärung
+</Link>{" "}
                     gelesen und stimme der Verarbeitung meiner Daten zu. *
                   </span>
                 </label>

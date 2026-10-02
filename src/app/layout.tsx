@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Sora } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
 import SmoothScroll from "@/components/SmoothScroll";
+import Footer from "@/components/footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,6 +36,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <main>
           <Header />
           {children}
+          <Footer />
         </main>
         </SmoothScroll>
       </body>

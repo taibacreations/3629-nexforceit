@@ -19,7 +19,6 @@ export default function Home() {
       <Area />
       <Contact />
       <Cta />
-      <Footer />
     </div>
   );
 }
