@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function Datenschutz() {
   return (
-    <main className="min-h-screen bg-black text-white overflow-hidden">
+    <main className="min-h-screen bg-black text-white">
 
       {/* ================= HERO ================= */}
       <section className="relative pt-32 md:pt-40 pb-20 md:pb-28 overflow-hidden">
