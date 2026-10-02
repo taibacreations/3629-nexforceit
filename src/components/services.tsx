@@ -87,7 +87,6 @@ const AUTOPLAY_DELAY = 3200;
 const DOTS_COUNT = 3;
 const GROUP_SIZE = Math.ceil(servicesData.length / DOTS_COUNT);
 const DRAG_THRESHOLD = 80;
-const FLICK_VELOCITY = 0.4; // px/ms
 const LG_LEFT_PEEK = CARD_WIDTH_DESKTOP / 2; // 200px
 
 const extendedCards = [
@@ -95,6 +94,8 @@ const extendedCards = [
   ...servicesData,
   ...servicesData.slice(0, CLONE_COUNT),
 ];
+
+type GoToOpts = { duration?: number; ease?: string };
 
 const Services = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -118,7 +119,7 @@ const Services = () => {
   const lastDelta = useRef(0);
   const lastMoveX = useRef(0);
   const lastMoveTime = useRef(0);
-  const velocity = useRef(0); // px/ms
+  const velocity = useRef(0); // px/ms (smoothed)
 
   const [activeDot, setActiveDot] = useState(0);
 
@@ -172,14 +173,14 @@ const Services = () => {
   }, []);
 
   const goToIndex = useCallback(
-    (targetIndex: number) => {
+    (targetIndex: number, opts?: GoToOpts) => {
       if (!trackRef.current || isAnimating.current) return;
       isAnimating.current = true;
 
       gsap.to(trackRef.current, {
         x: xForIndex(targetIndex),
-        duration: 0.9,
-        ease: "power3.inOut",
+        duration: opts?.duration ?? 0.9,
+        ease: opts?.ease ?? "power3.inOut",
         force3D: true,
         onComplete: () => {
           let finalIndex = targetIndex;
@@ -237,38 +238,48 @@ const Services = () => {
   useEffect(() => {
     if (!trackRef.current) return;
 
-    const applyOffset = (animate: boolean) => {
+    const applyOffset = () => {
       const cardWidth = getCardWidth();
       stepRef.current = cardWidth + CARD_GAP;
       offsetRef.current = getOffset(cardWidth);
-      const x = xForIndex(currentIndex.current);
-      if (animate) {
-        gsap.to(trackRef.current, {
-          x,
-          duration: 0.4,
-          ease: "power2.out",
-          force3D: true,
-        });
-      } else {
-        gsap.set(trackRef.current, { x, force3D: true });
-      }
+      gsap.set(trackRef.current, {
+        x: xForIndex(currentIndex.current),
+        force3D: true,
+      });
     };
 
-    applyOffset(false);
+    applyOffset();
     startAutoplay();
 
-    const handleResize = () => applyOffset(true);
+    let lastWidth = window.innerWidth;
+
+    const handleResize = () => {
+      // Phone par address bar show/hide hone se sirf height badalti hai,
+      // us par slider ko bilkul nahi chhedna
+      if (window.innerWidth === lastWidth) return;
+      lastWidth = window.innerWidth;
+
+      // Drag chal raha ho to beech mein na chhedo
+      if (isDragging.current) return;
+
+      gsap.killTweensOf(trackRef.current);
+      isAnimating.current = false;
+      syncIndexFromPosition(); // purani step/offset se hi index nikalo
+      applyOffset(); // phir nayi step/offset lagao
+    };
+
     window.addEventListener("resize", handleResize);
 
     return () => {
       if (autoplayTimer.current) clearInterval(autoplayTimer.current);
       window.removeEventListener("resize", handleResize);
     };
-  }, [startAutoplay, getOffset, getCardWidth, xForIndex]);
+  }, [startAutoplay, getOffset, getCardWidth, xForIndex, syncIndexFromPosition]);
 
   // ---------------- Drag / Grab handlers ----------------
   const handlePointerDown = (e: React.PointerEvent) => {
     if (!trackRef.current) return;
+    if (!e.isPrimary) return; // multi-touch ignore
     if (e.pointerType === "mouse" && e.button !== 0) return;
 
     gsap.killTweensOf(trackRef.current);
@@ -304,7 +315,9 @@ const Services = () => {
     const now = performance.now();
     const dt = now - lastMoveTime.current;
     if (dt > 0) {
-      velocity.current = (e.clientX - lastMoveX.current) / dt;
+      const instant = (e.clientX - lastMoveX.current) / dt;
+      // Smoothing: ek chhota ulta jhatka direction ko na bigaade
+      velocity.current = velocity.current * 0.6 + instant * 0.4;
     }
     lastMoveX.current = e.clientX;
     lastMoveTime.current = now;
@@ -317,18 +330,24 @@ const Services = () => {
     isDragging.current = false;
     quickXRef.current = null;
 
-    // e.clientX ki jagah last known delta (pointercancel mein safe)
     const delta = lastDelta.current;
-    const v = velocity.current;
 
+    // Agar ungli release se pehle ruk gayi thi to purani velocity ignore karo
+    const restedMs = performance.now() - lastMoveTime.current;
+    const v = restedMs > 80 ? 0 : velocity.current;
+
+    // Drag distance + thoda momentum = projected distance
+    const projected = delta + v * 150;
     const distThreshold = Math.min(DRAG_THRESHOLD, stepRef.current * 0.15);
-    const isFlick = Math.abs(v) > FLICK_VELOCITY;
 
-    if (Math.abs(delta) > distThreshold || isFlick) {
-      const dir = isFlick ? (v < 0 ? 1 : -1) : delta < 0 ? 1 : -1;
-      goToIndex(currentIndex.current + dir);
+    if (Math.abs(projected) > distThreshold) {
+      const dir = projected < 0 ? 1 : -1;
+      goToIndex(currentIndex.current + dir, {
+        duration: 0.6,
+        ease: "power3.out",
+      });
     } else {
-      goToIndex(currentIndex.current);
+      goToIndex(currentIndex.current, { duration: 0.4, ease: "power3.out" });
     }
 
     startAutoplay();
@@ -422,6 +441,7 @@ const Services = () => {
                     src={service.icon}
                     alt="service-logo"
                     draggable={false}
+                    decoding="async"
                   />
                 </span>
               </div>
