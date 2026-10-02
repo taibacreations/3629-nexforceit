@@ -17,16 +17,15 @@ const Contact = () => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const shineRef = useRef<HTMLSpanElement>(null);
 
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    company: "",
-    subject: "",
-    message: "",
-    consent: false,
-  });
+const [formData, setFormData] = useState({
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  company: "",
+  message: "",
+  consent: false,
+});
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -103,15 +102,14 @@ const Contact = () => {
 
       setStatus("success");
       setFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phone: "",
-        company: "",
-        subject: "",
-        message: "",
-        consent: false,
-      });
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  company: "",
+  message: "",
+  consent: false,
+});
     } catch (err) {
       console.error("Contact form submit error:", err);
       setStatus("error");
@@ -241,6 +239,8 @@ const Contact = () => {
                     className="w-full bg-transparent border border-white/20 rounded-lg px-4 py-2 text-white placeholder:text-[#475569] text-[14px] focus:outline-none focus:border-blue-500 transition-colors"
                   />
                 </div>
+
+
 
                 {/* <div>
                   <label className="block text-white text-[14px] xl:text-[16px] font-semibold mb-1.5">Betreff *</label>
