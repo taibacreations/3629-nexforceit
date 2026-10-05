@@ -97,9 +97,7 @@ const Footer = () => {
 
     const header = document.querySelector("header");
     const headerHeight =
-      header instanceof HTMLElement
-        ? header.offsetHeight
-        : 0;
+      header instanceof HTMLElement ? header.offsetHeight : 0;
 
     const extraGap = 20;
 
@@ -127,7 +125,6 @@ const Footer = () => {
       <div className="absolute top-70 left-0 w-full h-30 z-10 md:hidden backdrop-blur-md bg-gradient-to-b from-transparent via-[#010304] to-[#010304] pointer-events-none" />
 
       <div className="relative max-w-[1480px] z-50 mx-auto px-4 md:px-6 xl:px-10 flex flex-col md:flex-row justify-between items-start gap-10 md:gap-4 lg:gap-6">
-
         {/* -------------------------------------------------
             Quick Links
         ------------------------------------------------- */}
@@ -141,23 +138,13 @@ const Footer = () => {
           </h3>
 
           <div className="flex flex-col lg:flex-row lg:gap-[15px] xl:gap-[30px] items-start">
-
             {/* First column */}
             <div className="flex flex-col items-start">
               <ul>
                 <li className="text-[16px] xl:text-[18px] mb-[15px] md:mb-[8px] lg:mb-[15px] text-white/80 hover:text-white transition-colors">
                   <Link
-                    href={
-                      pathname === "/"
-                        ? "#ueber-uns"
-                        : "/#ueber-uns"
-                    }
-                    onClick={(e) =>
-                      handleFooterLinkClick(
-                        e,
-                        "ueber-uns"
-                      )
-                    }
+                    href={pathname === "/" ? "#ueber-uns" : "/#ueber-uns"}
+                    onClick={(e) => handleFooterLinkClick(e, "ueber-uns")}
                   >
                     Über uns
                   </Link>
@@ -171,14 +158,15 @@ const Footer = () => {
                         : "/#dienstleistungen"
                     }
                     onClick={(e) =>
-                      handleFooterLinkClick(
-                        e,
-                        "dienstleistungen"
-                      )
+                      handleFooterLinkClick(e, "dienstleistungen")
                     }
                   >
                     Dienstleistungen
                   </Link>
+                </li>
+
+                <li className="text-[16px] xl:text-[18px] mb-[15px] md:mb-[8px] lg:mb-[15px] text-white/80 hover:text-white transition-colors">
+                  <Link href="/datenschutz">Datenschutz</Link>
                 </li>
               </ul>
             </div>
@@ -188,17 +176,8 @@ const Footer = () => {
               <ul>
                 <li className="text-[16px] xl:text-[18px] mb-[15px] md:mb-[8px] lg:mb-[15px] text-white/80 hover:text-white transition-colors">
                   <Link
-                    href={
-                      pathname === "/"
-                        ? "#warum-wir"
-                        : "/#warum-wir"
-                    }
-                    onClick={(e) =>
-                      handleFooterLinkClick(
-                        e,
-                        "warum-wir"
-                      )
-                    }
+                    href={pathname === "/" ? "#warum-wir" : "/#warum-wir"}
+                    onClick={(e) => handleFooterLinkClick(e, "warum-wir")}
                   >
                     Warum wir?
                   </Link>
@@ -211,12 +190,7 @@ const Footer = () => {
                         ? "#servicegebiet"
                         : "/#servicegebiet"
                     }
-                    onClick={(e) =>
-                      handleFooterLinkClick(
-                        e,
-                        "servicegebiet"
-                      )
-                    }
+                    onClick={(e) => handleFooterLinkClick(e, "servicegebiet")}
                   >
                     Servicegebiet
                   </Link>
@@ -224,17 +198,8 @@ const Footer = () => {
 
                 <li className="text-[16px] xl:text-[18px] mb-[15px] md:mb-[8px] lg:mb-[15px] text-white/80 hover:text-white transition-colors">
                   <Link
-                    href={
-                      pathname === "/"
-                        ? "#kontakt"
-                        : "/#kontakt"
-                    }
-                    onClick={(e) =>
-                      handleFooterLinkClick(
-                        e,
-                        "kontakt"
-                      )
-                    }
+                    href={pathname === "/" ? "#kontakt" : "/#kontakt"}
+                    onClick={(e) => handleFooterLinkClick(e, "kontakt")}
                   >
                     Kontakt
                   </Link>
@@ -250,14 +215,14 @@ const Footer = () => {
 
         <div
           ref={logoRef}
-          className="order-1 md:order-2 flex flex-col gap-[20px] md:gap-[12px] lg:gap-[20px] md:items-center"
+          className="order-1 md:order-2 flex flex-col gap-[10px] md:gap-[5px] lg:gap-[2px] md:items-center"
         >
           {/* Footer logo -> Home */}
           <Link href="/">
             <img
-              src="/footer-logo.svg"
+              src="/logo2.png"
               alt="NexForceIT Logo"
-              className="w-[170px] md:w-[280px] xl:w-auto"
+              className="w-[170px] md:w-[280px] xl:w-[300px]"
             />
           </Link>
 
@@ -267,12 +232,12 @@ const Footer = () => {
               href="https://www.linkedin.com/in/nexforce-it-46642843b"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Facebook"
+              aria-label="LinkedIn"
               className="hover:opacity-70 transition-opacity"
             >
               <img
                 src="/in.svg"
-                alt="Facebook"
+                alt="LinkedIn"
                 className="w-[35px] h-[35px] md:w-[36px] md:h-[36px] xl:w-auto xl:h-auto"
               />
             </a>
@@ -306,14 +271,9 @@ const Footer = () => {
           </h3>
 
           <div className="flex flex-col gap-[15px] md:gap-[10px] lg:gap-[15px] items-start">
-
             {/* Email */}
             <div className="flex flex-row gap-[10px] xl:gap-[17px] items-center">
-              <img
-                src="/mail.svg"
-                alt=""
-                className="shrink-0"
-              />
+              <img src="/mail.svg" alt="" className="shrink-0" />
 
               <a
                 href="mailto:info@nexforce-it.com"
@@ -325,19 +285,15 @@ const Footer = () => {
 
             {/* Phone */}
             <div className="flex flex-row gap-[10px] xl:gap-[17px] items-center">
-              <img
-                src="/phone.svg"
-                alt=""
-              />
+              <img src="/phone.svg" alt="" />
 
               <a
                 href="tel:+491731704508"
                 className="text-[16px] xl:text-[18px] text-white/80 hover:text-white transition-colors"
               >
-                +491731704508
+                +49 6109 9664037
               </a>
             </div>
-
           </div>
         </div>
       </div>
@@ -347,10 +303,19 @@ const Footer = () => {
       ------------------------------------------------- */}
 
       <div ref={bottomRef}>
-        <div className="mt-10 sm:mt-14 md:mt-[40px] lg:mt-[60px] border-t border-white/20 pt-7 pb-7">
-          <p className="text-center text-[16px] xl:text-[18px] text-white px-4">
-            © 2026 NEXFORCEIT. All rights reserved.
-          </p>
+        <div className="mt-10 sm:mt-14 md:mt-[40px] lg:mt-[60px] border-t border-white/20 pt-7 pb-7 px-4">
+          <div className="max-w-[1480px] mx-auto flex flex-col-reverse md:flex-row md:justify-between items-center gap-3 md:gap-4 text-center md:text-left md:px-6 xl:px-10">
+            <p className="text-[16px] xl:text-[18px] text-white">
+              © 2026 NexForce-IT. Alle Rechte vorbehalten.
+            </p>
+
+            <Link
+              href="/impressum"
+              className="text-[16px] xl:text-[18px] text-white/80 hover:text-white underline underline-offset-2 transition-colors"
+            >
+              Impressum
+            </Link>
+          </div>
         </div>
       </div>
     </section>

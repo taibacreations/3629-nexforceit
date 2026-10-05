@@ -576,7 +576,7 @@ const Header = () => {
             onClick={closeMenu}
           >
             <Image
-              src="/logo.svg"
+              src="/logo2.png"
               width={140}
               height={70}
               alt="NEXFORCEIT"
@@ -664,7 +664,7 @@ const Header = () => {
         <div ref={logoRef}>
           <Link href="/">
             <Image
-              src="/logo.svg"
+              src="/logo2.png"
               width={216}
               height={100}
               alt="NEXFORCEIT"
